@@ -9,6 +9,10 @@
     $_SESSION['tolak']='false';
     $_SESSION['gagal']='false';
 
+    if ($_SESSION['Jabatan'] == 'Penjaga Toko') {
+        header('location:../../index.php');
+    }
+
     // Mengambil data idBarangMasuk
 	$fetchIdBarangMasuk = $_GET['id'];
     $query=mysqli_query($conn, "SELECT * FROM tbstokmasuk 
@@ -425,8 +429,7 @@
                                                         <label for="exampleFormControlSelect1">Produk:</label>
                                                         <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk" required>
                                                             <?php
-                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
-                                                                while ($data = mysqli_fetch_array($query)) {
+                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailmasuk.idProduk FROM tbdetailmasuk WHERE tbdetailmasuk.idBarangMasuk = '$fetchIdBarangMasuk') ORDER BY tbproduk.Produk ");                                                                while ($data = mysqli_fetch_array($query)) {
                                                                 ?>
                                                                 <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'];?></option>
                                                                 <?php

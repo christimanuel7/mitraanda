@@ -6,6 +6,11 @@
     $_SESSION['terima']='false';
     $_SESSION['tolak']='false';
     $_SESSION['gagal']='false';
+
+    //Proses Mengecek Jabatan yang Dapat Mengakses Halaman Satuan
+    if ($_SESSION['Jabatan'] == 'Checker') {
+        header('location:../../index.php');
+    }
 		
     // Proses Menambah Barang Keluar, Ketika Data Barang Keluar Ditambah
     if(isset($_POST['tambahBarangKeluar'])){

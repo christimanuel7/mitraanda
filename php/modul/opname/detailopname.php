@@ -2,6 +2,7 @@
     require '../../fungsi.php';
     require '../../ceklogin.php';
 
+    //Mengecek Jabatan yang Dapat Mengakses Halaman Opname
     if($_SESSION['Jabatan']=='Penjaga Toko'){
         header('location:../../index.php');
     }

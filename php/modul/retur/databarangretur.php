@@ -6,6 +6,11 @@
     $_SESSION['terima']='false';
     $_SESSION['tolak']='false';
     $_SESSION['gagal']='false';
+
+    //Mengecek Jabatan yang Dapat Mengakses Halaman Retur
+    if($_SESSION['Jabatan']=='Checker'){
+        header('location:../../index.php');
+    }
 			
     if(isset($_POST['tambahBarangRetur'])){
         $idDetailMasuk=$_POST['idDetailMasuk'];

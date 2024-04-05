@@ -1,5 +1,9 @@
 <?php
     require '../../fungsi.php';
+
+	if ($_SESSION['Jabatan'] == 'Penjaga Toko') {
+        header('location:../../index.php');
+    }
 	
 	$idMasuk = $_GET['id'];
 	

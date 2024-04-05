@@ -5,6 +5,10 @@
     $_SESSION['tambah']='false';
     $_SESSION['terima']='false';
     $_SESSION['tolak']='false';
+
+    if ($_SESSION['Jabatan'] == 'Penjaga Toko') {
+        header('location:../../index.php');
+    }
 		
     // Proses Menambah Barang Masuk, Ketika Data Barang Masuk Ditambah
     if(isset($_POST['tambahBarangMasuk'])){

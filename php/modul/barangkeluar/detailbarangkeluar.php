@@ -125,7 +125,7 @@
 
             // Kueri mengubah data detail barang keluar dan data barang keluar
             if($query2){
-                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$r[3]' WHERE idProduk='$r[2]' AND stokProduk>='$r[3]'");
+                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$r[4]' WHERE idProduk='$r[2]' AND stokProduk>='$r[4]'");
                 $_SESSION['terima']='true';
             }else{
                 $_SESSION['gagal']='true';
