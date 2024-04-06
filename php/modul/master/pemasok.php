@@ -164,19 +164,43 @@
                     </a>
                     <div id="collapseStok" class="collapse" aria-labelledby="headingBarang" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Checker';
+                                if($jabatan OR $jabatan2){
+                            ?>
                             <a class="collapse-item" href="../barangmasuk/databarangmasuk.php"><i class="fas fa-fw fa-arrow-down"></i>Barang Masuk</a>
+                            <?php 
+                                }
+                            ?>
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+                                if($jabatan OR $jabatan2){
+                            ?>
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
+                            <?php 
+                                }
+                            ?>
                         </div>
                     </div>
                 </li>
 
+                <?php 
+                    $jabatan=$_SESSION['Jabatan']=='Owner';
+                    $jabatan2=$_SESSION['Jabatan']=='Checker';
+                    if($jabatan OR $jabatan2){
+                ?>
                 <!-- Nav Item - Opname- -->
                 <li class="nav-item">
                     <a class="nav-link" href="../opname/dataopname.php">
                     <i class="fas fa-fw fa-search"></i>
                     <span>Opname Stok</span></a>
                 </li>
+                <?php 
+                    }
+                ?>
 
                 <!-- Nav Item - Pengguna -->
                 <li class="nav-item">
@@ -200,30 +224,43 @@
                     </div>
                 </li> 
 
-                <?php 
-                    $jabatan=$_SESSION['Jabatan']=='Owner';
-                    $jabatan2=$_SESSION['Jabatan']=='Checker';
-                    if($jabatan OR $jabatan2){
-                ?>
-                     <!-- Nav Item - Laporan -->
-                    <li class="nav-item">
-                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
-                        aria-expanded="true" aria-controls="collapseLaporan">
-                            <i class="fas fa-fw fa-clipboard-list"></i>
-                            <span>Laporan</span>
-                        </a>
-                            
-                        <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
-                            <div class="bg-white py-2 collapse-inner rounded">
-                                <a class="collapse-item" href="../laporan/laporanbarangmasuk.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Masuk</a>
-                                <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-                                <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
-								<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
-                            </div>
+                <!-- Nav Item - Laporan -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
+                    aria-expanded="true" aria-controls="collapseLaporan">
+                        <i class="fas fa-fw fa-clipboard-list"></i>
+                        <span>Laporan</span>
+                    </a>
+                    <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Checker';
+                                if($jabatan OR $jabatan2){
+                            ?>
+                            <a class="collapse-item" href="../laporan/laporanbarangmasuk.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Masuk</a>
+                            <?php 
+                            }?> 
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+                                if($jabatan OR $jabatan2){
+                            ?>
+                            <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
+                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
+                            <?php 
+                            }?>
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Checker';
+                                if($jabatan OR $jabatan2){
+                            ?>
+                            <a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
+                            <?php 
+                            }?>
                         </div>
-                    </li>
-                <?php 
-                }?> 
+                    </div>
+                </li>
 
                 <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
