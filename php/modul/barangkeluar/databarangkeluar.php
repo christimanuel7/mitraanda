@@ -332,7 +332,6 @@
                                                 <th class="text-center">Tanggal</th>
                                                 <th class="text-center">Keterangan</th>
                                                 <th class="text-center">Jumlah Item</th>
-                                                <th class="text-center">Bukti</th>
                                                 <th class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
@@ -351,9 +350,6 @@
                                                 <td class="text-center"><?=$tanggalKeluar;?></td>
                                                 <td><?=$Keterangan;?></td>
                                                 <td class="text-center"><?=$jumlahItem;?></td>
-                                                <td class="text-center">
-                                                    <a href="cetakstrukkeluar?id=<?php echo $idBarangKeluar;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
-                                                </td>
                                                 <td class="text-center">
                                                     <a href="detailbarangkeluar.php?id=<?php echo $idBarangKeluar;?>"><i class="fas fa-fw fa-list" style="color: #000000;"></i></a>
                                                 </td>

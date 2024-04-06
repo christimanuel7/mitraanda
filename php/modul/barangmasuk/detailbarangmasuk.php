@@ -127,7 +127,7 @@
             
             // Kueri mengubah data detail barang masuk dan data barang masuk
             if($query2){
-                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk+'$r[3]' WHERE idProduk='$r[2]'");
+                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk+'$r[4]' WHERE idProduk='$r[2]'");
                 $_SESSION['terima']='true';
             }else{
                 $_SESSION['gagal']='true'; 
@@ -391,6 +391,7 @@
                                         <label for="recipient-name" class="col-form-label">ID Barang Masuk:</label>
                                         <input type="text" class="form-control" id="idBarangMasuk" name="idBarangMasuk" value="<?php echo $idBarangMasuk;?>" readonly>
                                     </div>
+                                    <?php if($Status == '0'){?>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Tanggal Masuk:</label>
                                         <input type="date" class="form-control" id="tanggalMasuk" name="tanggalMasuk" value="<?php echo $tanggalMasuk;?>" max="<?= date('Y-m-d'); ?>" required>
@@ -432,7 +433,34 @@
                                         ?>
                                         </select>
                                     </div>
-                                    <?php if($Status == '0'){?>
+                                    <?php }else{?>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Tanggal Masuk:</label>
+                                        <input type="date" class="form-control" id="tanggalMasuk" name="tanggalMasuk" value="<?php echo $tanggalMasuk;?>" max="<?= date('Y-m-d'); ?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Pemasok:</label>
+                                        <select class="form-control" id="exampleFormControlSelect1" id="idPemasok" name="idPemasok" readonly>
+                                        <?php
+                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpemasok
+                                            WHERE idPemasok='$idPemasok'");
+                                            $dataSelect=mysqli_fetch_array($querySelect);
+                                        ?>
+                                        <option value="<?php echo $dataSelect['idPemasok'];?>" hidden><?php echo $dataSelect['Pemasok'];?></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Penerima:</label>
+                                        <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna" readonly>
+                                        <?php
+                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna WHERE idPengguna='$idPengguna'");
+                                            $dataSelect=mysqli_fetch_array($querySelect);
+                                        ?>
+                                            <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
+                                        </select>
+                                    </div>
+                                    <?php }?>
+                                    <?php if($Status == '1'){?>
                                     <?php }else{?>
                                         <button type="submit" class="btn btn-success" name="simpanDataMasuk">
                                             <i class="fa fa-save">Simpan</i>
@@ -675,20 +703,20 @@
 											<!-- Modal Terima -->	
                                         </tbody>
                                     </table>
-                                    <?php if($Status == '1'){?>
+                                    <?php if($Status == '0'){?>
+                                        <?php 
+                                            $jabatan=$_SESSION['Jabatan']=='Owner';
+                                            if($jabatan){
+                                        ?>
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                                            <button class="btn btn-success" type="button" data-toggle="modal" data-target="#terima<?=$idBarangMasuk;?>"><i class="fas fa-check">Terima</i></button>
+                                            <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#tolak<?=$idBarangMasuk;?>"><i class="fas fa-times">Tolak</i></button>
+                                        </div>
+                                        <?php 
+                                            }
+                                        ?>
                                     <?php }else{?>
-                                            <?php 
-                                                $jabatan=$_SESSION['Jabatan']=='Owner';
-                                                if($jabatan){
-                                            ?>
-                                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#terima<?=$idBarangMasuk;?>"><i class="fas fa-check">Terima</i></button>
-                                                <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#tolak<?=$idBarangMasuk;?>"><i class="fas fa-times">Tolak</i></button>
-                                            </div>
-                                            <?php 
-                                                }
-                                            ?>
-                                        <?php }?>
+                                    <?php }?>
                                     </div>
                                 </div>   
                             </div>

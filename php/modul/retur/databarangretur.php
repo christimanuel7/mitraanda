@@ -3,15 +3,14 @@
     require '../../ceklogin.php';
 
     $_SESSION['tambah']='false';
-    $_SESSION['terima']='false';
-    $_SESSION['tolak']='false';
     $_SESSION['gagal']='false';
 
     //Mengecek Jabatan yang Dapat Mengakses Halaman Retur
     if($_SESSION['Jabatan']=='Checker'){
         header('location:../../index.php');
     }
-			
+		
+    // Proses Menambah Barang Retur, Ketika Data Barang Retur Ditambah
     if(isset($_POST['tambahBarangRetur'])){
         $idDetailMasuk=$_POST['idDetailMasuk'];
         $tglRetur= $_POST['tglRetur'];
@@ -21,54 +20,23 @@
         $idProduk=$row['idProduk'];
         $jumlahMasuk=$row['jumlahMasuk'];
         $jumlahRetur=$_POST['jumlahRetur'];
-        $queryHargaRetur=mysqli_query($conn, "SELECT hargaBeli FROM tbproduk WHERE idProduk='$idProduk'");
-        $row=mysqli_fetch_array($queryHargaRetur);
-        $totalHargaRetur= $row['hargaBeli']*$jumlahRetur;
         $Alasan=$_POST['Alasan'];
         $imageRetur=$_FILES['imageRetur'];
         $Format=$imageRetur['type'];
         $Blob=addslashes(file_get_contents($imageRetur["tmp_name"]));
         $idRetur="R".$idDetailMasuk;
-        $Status="0";
+        $Status="1";
 
         // Jika masukan jumnlah retur lebih kecil sama dengan jumlah masuk
         if($jumlahRetur<=$jumlahMasuk){
-            mysqli_query($conn, "INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,totalHargaRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$totalHargaRetur','$Alasan','$Blob','$Format','Status')");
+            mysqli_query($conn, "INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
+            mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$jumlahRetur' WHERE idProduk='$idProduk'");
             $_SESSION['tambah']='true'; 
         }
         // Jika masukan jumlah retur lebih besar dari jumlah masuk
         else{
             $_SESSION['gagal']='true';
         } 
-    }
-		
-    if(isset($_POST['hapusBarangRetur'])){
-        $idBarangRetur= $_POST['idBarangRetur'];
-        $hapusRetur = mysqli_query($conn, "DELETE FROM tbretur WHERE idBarangRetur='$idBarangRetur'");
-        
-        //Kueri menghapus data retur
-        if($hapusRetur){
-            $_SESSION['tolak']='true'; 
-        }else{
-            $_SESSION['gagal']='true';
-        } 
-    }
-
-    if(isset($_POST['terimaBarangRetur'])){
-        $idBarangRetur= $_POST['idBarangRetur'];
-        $Status="1";
-        $query = mysqli_query($conn, "SELECT * FROM tbretur WHERE idBarangRetur='$idBarangRetur'");
-        $query2=mysqli_query($conn, "UPDATE tbretur SET Status='$Status' WHERE idBarangRetur='$idBarangRetur'");
-        
-        while($r=mysqli_fetch_row($query)){
-            //Kueri menambah jumlah stok produk   
-            if($query2){
-            mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$r[4]' WHERE idProduk='$r[3]'");
-            $_SESSION['terima']='true'; 
-            }else{
-            $_SESSION['gagal']='true';
-            } 
-        }
     }
 ?>
 
@@ -305,14 +273,6 @@
                                 echo '<div class="alert alert-primary" role="alert">
                                     Data barang retur berhasil ditambah.
                                 </div>';
-                            }else if($_SESSION['terima']=='true'){
-                                echo '<div class="alert alert-success" role="alert">
-                                    Data barang retur berhasil diterima.
-                                </div>';
-                            }else if($_SESSION['tolak']=='true'){
-                                echo '<div class="alert alert-danger" role="alert">
-                                    Data barang retur berhasil ditolak.
-                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
                                     Data barang retur tidak terkoneksi.
@@ -393,7 +353,6 @@
                                                 <th class="text-center">ID Barang Retur</th>
                                                 <th class="text-center">Tanggal</th>
                                                 <th class="text-center">Nama Produk</th>
-                                                <th class="text-center">Jumlah Beli</th>
                                                 <th class="text-center">Jumlah Retur</th>
                                                 <th class="text-center">Alasan</th>
                                                 <th class="text-center">Bukti</th>
@@ -406,47 +365,31 @@
                                                 INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
                                                 INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
-                                                ORDER BY idBarangRetur;");
+                                                ORDER BY idBarangRetur DESC;");
                                                 while($data=mysqli_fetch_array($tampilDataRetur)){
                                                     $idBarangRetur = $data['idBarangRetur'];
                                                     $idDetailMasuk = $data['idDetailMasuk'];
                                                     $tanggalRetur= date('d-m-Y', strtotime($data['tanggalRetur']));
                                                     $Produk =$data['Produk'];
-                                                    $jumlahMasuk =$data['jumlahMasuk'];
                                                     $jumlahRetur =$data['jumlahRetur'];
                                                     $Satuan=$data['Satuan'];
                                                     $Alasan =$data['Alasan'];
                                                     $Format =$data['Format'];
-                                                    $Status =(bool) $data['Status'];
+                                                    $Status =(int) $data['Status'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$idBarangRetur;?></td>
                                                 <td class="text-center"><?=$tanggalRetur;?></td>
                                                 <td><?=$Produk;?></td>
-                                                <td class="text-center"><?=$jumlahMasuk.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$jumlahRetur.' '.$Satuan;?></td>
                                                 <td><?=$Alasan;?></td>
                                                 <td class="text-center">
                                                     <a href="downloadbuktiretur.php?id=<?php echo $idBarangRetur;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
                                                 </td>
                                                 <td class="text-center">
-                                                    <?php if($Status === true){?>
+                                                    <?php if($Status == '1'){?>
                                                         <i class="fas fa-check">Disetujui</i>
                                                     <?php }else{?>
-                                                    <?php 
-                                                        $jabatan=$_SESSION['Jabatan']=='Owner';
-                                                        $jabatan2=$_SESSION['Jabatan']=='Checker';
-                                                        if($jabatan OR $jabatan2){
-                                                        ?>
-                                                            <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#terima<?=$idBarangRetur;?>">
-                                                                <i class="fas fa-check">Terima</i>
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#tolak<?=$idBarangRetur;?>">
-                                                                <i class="fas fa-times">Tolak</i>
-                                                            </button>
-                                                        <?php 
-                                                        }
-                                                        ?>
                                                     <?php }?>
                                                 </td>
                                             </tr>
@@ -455,54 +398,6 @@
                                             ?>
                                         </tbody>
                                     </table>
-                                    
-                                    <!-- Modal Tolak -->
-                                    <div class="modal fade" id="tolak<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <form method="POST">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menolak permintaan barang retur tersebut?</h5>
-                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-danger" name="hapusBarangRetur">Tolak</button>
-                                                        </div>
-                                                    </div>
-                                            </form>   
-                                        </div>
-                                    </div>
-
-                                    <!-- Modal Terima -->
-                                    <div class="modal fade" id="terima<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <form method="POST">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menerima permintaan barang retur tersebut?</h5>
-                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-success" name="terimaBarangRetur">Terima</button>
-                                                        </div>
-                                                    </div>
-                                            </form>   
-                                        </div>
-                                    </div>
                                 </div>
                             </div>   
                             <!-- Akhiran Datatables -->

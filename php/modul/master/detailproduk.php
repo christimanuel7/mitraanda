@@ -28,9 +28,8 @@
         $Produk= $_POST['Produk'];
         $idSatuan= $_POST['idSatuan'];
         $stokProduk= $_POST['stokProduk'];
-        $hargaBeli= $_POST['hargaBeli'];
         $hargaJual= $_POST['hargaJual'];
-        $ubahProduk = mysqli_query($conn,"UPDATE tbproduk SET Produk='$Produk',idSatuan='$idSatuan', hargaBeli='$hargaBeli',hargaJual='$hargaJual', stokProduk='$stokProduk' WHERE idProduk='$idProduk'");
+        $ubahProduk = mysqli_query($conn,"UPDATE tbproduk SET Produk='$Produk',idSatuan='$idSatuan',hargaJual='$hargaJual',stokProduk='$stokProduk' WHERE idProduk='$idProduk'");
         
         // Kueri mengubah data satuan
         if($ubahProduk){
@@ -366,8 +365,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <b><?php echo 'Nama Produk: '.$Produk;?></b>
-                                            <br><?php echo 'Harga Beli per Unit: '.$konversiHargaBeli;?>
-                                            <br><?php echo 'Harga Beli per Jual: '.$konversiHargaJual;?>
+                                            <br><?php echo 'Harga Jual per Unit: '.$konversiHargaJual;?>
                                             <br><?php echo 'Jumlah Stok: '.$stokProduk.' '.$Satuan;?>
                                         </div>
                                         <div class="modal-footer">

@@ -389,6 +389,7 @@
                                         <label for="recipient-name" class="col-form-label">ID Barang Keluar:</label>
                                         <input type="text" class="form-control" id="idBarangKeluar" name="idBarangKeluar" value="<?php echo $idBarangKeluar;?>" readonly>
                                     </div>
+                                    <?php if($Status == '0'){?>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Tanggal Keluar:</label>
                                         <input type="date" class="form-control" id="tanggalKeluar" name="tanggalKeluar" value="<?php echo $tanggalKeluar;?>" max="<?= date('Y-m-d'); ?>" required>
@@ -397,7 +398,20 @@
                                         <label for="recipient-name" class="col-form-label">Keterangan:</label>
                                         <input type="text" class="form-control" id="Keterangan" name="Keterangan" value="<?php echo $Keterangan;?>" required>
                                     </div>
+                                    <?php }else{?>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Tanggal Keluar:</label>
+                                        <input type="date" class="form-control" id="tanggalKeluar" name="tanggalKeluar" value="<?php echo $tanggalKeluar;?>" max="<?= date('Y-m-d'); ?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Keterangan:</label>
+                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" value="<?php echo $Keterangan;?>" readonly>
+                                    </div>
+                                    <?php }?>
                                     <?php if($Status == '1'){?>
+                                        <button type="submit" class="btn btn-success" name="cetakBonKeluar">
+                                            <i class="fa fa-print">Cetak Bon</i>
+                                        </button>
                                     <?php }else{?>
                                         <button type="submit" class="btn btn-success" name="simpanDataKeluar">
                                             <i class="fa fa-save">Simpan</i>
@@ -466,7 +480,9 @@
                                                 <th class="text-center">Harga per Item</th>
                                                 <th class="text-center">Jumlah</th>
                                                 <th class="text-center">Total</th>
-                                                <th class="text-center">Aksi</th>
+                                                <?php if($Status=='0'){?>
+                                                    <th class="text-center">Aksi</th>
+                                                <?php }?>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -498,18 +514,16 @@
                                                 <td class="text-center"><?=$konversiHargaKeluar;?></td>
                                                 <td class="text-center"><?=$jumlahKeluar.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$konversiTotalHargaKeluar;?></td>
-                                                <td class="text-center">
-                                                    <?php if($Status=='1'){?>
-                                                        <i class="fas fa-check">Disetujui</i>
-                                                    <?php }else{?>
+                                                <?php if($Status=='0'){?>
+                                                    <td class="text-center">
                                                         <button type="button" class="btn btn-warning btn-sm mb-4" data-toggle="modal" data-target="#ubah<?=$idDetailKeluar;?>">
                                                             <i class="fas fa-edit">Ubah</i>
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#hapus<?=$idDetailKeluar;?>">
                                                             <i class="fas fa-trash">Hapus</i> 
                                                         </button>
-                                                    <?php }?>
-                                                </td>
+                                                    </td>
+                                                <?php }?>
                                             </tr>
 
                                             <!-- Modal Ubah -->

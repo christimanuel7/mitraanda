@@ -412,6 +412,9 @@
                                 </div>
                                 <?php if($Status === 'true'){?>
                                 <?php }else{?>
+                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#simpan">
+                                        <i class="fas fa-save">Simpan</i>
+                                    </button>
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
                                         <i class="fas fa-plus">Tambah</i>
                                     </button>
