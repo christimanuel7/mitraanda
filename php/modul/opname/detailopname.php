@@ -33,12 +33,9 @@
         $idOpname= $_POST['idOpname'];
         $idProduk= $_POST['idProduk'];
 
-        $queryHargaPenyusutan=mysqli_query($conn, "SELECT hargaBeli,stokProduk FROM tbproduk WHERE idProduk='$idProduk'");
-        $row=mysqli_fetch_array($queryHargaPenyusutan);
         $jumlahSistem=$row['stokProduk'];
         $jumlahOpname=$_POST['jumlahOpname'];
         $Selisih=$jumlahOpname-$jumlahSistem;
-        $totalHargaPenyusutan= $row['hargaBeli']*$Selisih;
 
         $cekIdOpname =mysqli_query($conn, "SELECT * FROM tbdetailopname WHERE idOpname='$idOpname'");
         $noUrut=mysqli_num_rows($cekIdOpname);
@@ -50,7 +47,7 @@
         }
         $idDetailOpname=$idOpname."-".$Jumlah;
         $Alasan= $_POST['Alasan'];
-        $tambahDetailOpname = mysqli_query($conn,"INSERT INTO tbdetailopname(idDetailOpname,idOpname,idProduk,jumlahSistem,jumlahFisik,totalHargaPenyusutan,Alasan) VALUES ('$idDetailOpname','$idOpname','$idProduk','$jumlahSistem','$jumlahOpname','$totalHargaPenyusutan','$Alasan')");
+        $tambahDetailOpname = mysqli_query($conn,"INSERT INTO tbdetailopname(idDetailOpname,idOpname,idProduk,jumlahSistem,jumlahFisik,Alasan) VALUES ('$idDetailOpname','$idOpname','$idProduk','$jumlahSistem','$jumlahOpname','$Alasan')");
         
         // Kueri menambah data detail barang masuk
         if($tambahDetailOpname){
@@ -65,12 +62,10 @@
         $idProduk= $_POST['idProduk'];
         $idDetailOpname= $_POST['idDetailOpname'];
         
-        $queryHargaPenyusutan=mysqli_query($conn, "SELECT hargaBeli,stokProduk FROM tbproduk WHERE idProduk='$idProduk'");
         $row=mysqli_fetch_array($queryHargaPenyusutan);
         $jumlahOpname= $_POST['jumlahOpname'];
         $jumlahSistem=$row['stokProduk'];
         $Selisih=$jumlahOpname-$jumlahSistem;
-        $totalHargaPenyusutan= $row['hargaBeli']*$Selisih;
 
         $Alasan= $_POST['Alasan'];
         $ubahDetailOpname = mysqli_query($conn,"UPDATE tbdetailopname SET idProduk='$idProduk',jumlahFisik='$jumlahOpname',jumlahSistem='$jumlahSistem',Alasan='$Alasan',totalHargaPenyusutan='$totalHargaPenyusutan' WHERE idDetailOpname='$idDetailOpname'");

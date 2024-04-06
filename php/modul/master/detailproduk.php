@@ -383,141 +383,37 @@
                                 <table class="table table-stripped table-bordered table-hover" id="dtLaporanMasuk" width="100%" cellspacing="0">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th rowspan="2" class="text-center">Tanggal</th>
-                                            <th rowspan="2" class="text-center">Dari/Untuk</th>
-                                            <th colspan="3" class="text-center">Pembelian</th>
-                                            <th colspan="3" class="text-center">Harga Pokok Penjualan</th>
-                                            <th colspan="3" class="text-center">Persediaan</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center">Unit</th>
-                                            <th class="text-center">Harga</th>
-                                            <th class="text-center">Jumlah</th>
-                                            <th class="text-center">Unit</th>
-                                            <th class="text-center">Harga</th>
-                                            <th class="text-center">Jumlah</th>
-                                            <th class="text-center">Unit</th>
-                                            <th class="text-center">Harga</th>
-                                            <th class="text-center">Jumlah</th>
+                                            <th class="text-center">Tanggal</th>
+                                            <th class="text-center">Dari/Untuk</th>
+                                            <th class="text-center">Penambahan Stok</th>
+                                            <th class="text-center">Pengurangan Stok</th>
+                                            <th class="text-center">Sisa Stok</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                            $tampilDetailProdukMasuk=mysqli_query($conn,"SELECT tbstokmasuk.tanggalMasuk, tbpemasok.Pemasok, tbdetailmasuk.jumlahMasuk, tbdetailmasuk.totalHargaMasuk FROM tbdetailmasuk
-                                            INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
-                                            INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
-                                            WHERE tbdetailmasuk.idProduk='$idProduk'");
-                                            $totalUnit=0;
-                                            $hargaUnit=0;
-                                            $totalHarga=0;
-                                            while($data=mysqli_fetch_array($tampilDetailProdukMasuk)){
-                                                $tanggalMasuk = $data['tanggalMasuk'];
-                                                $jumlahMasuk =$data['jumlahMasuk'];
-                                                $Pemasok=$data['Pemasok'];
-                                                $totalHargaMasuk =$data['totalHargaMasuk'];
-                                                $hargaMasukPerItem=$totalHargaMasuk/$jumlahMasuk;
-                                                $konversiHargaMasukPerItem= "Rp " . number_format($hargaMasukPerItem,2,',','.');
-                                                $konversiTotalHargaMasuk= "Rp " . number_format($totalHargaMasuk,2,',','.');
-                                                $totalUnit=$totalUnit+$jumlahMasuk;
-                                                $hargaUnit=$hargaMasukPerItem;
-                                                $totalHarga=$totalHarga+$totalHargaMasuk;
-                                                $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
-                                                $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
-                                            ?>
-                                            <tr>
-                                                <td class="text-center"><?=$tanggalMasuk;?></td>
-                                                <td class="text-left"><?=$Pemasok;?></td>
-
-                                                <td class="text-center"><?=$jumlahMasuk;?></td>
-                                                <td class="text-center"><?=$konversiHargaMasukPerItem;?></td>
-                                                <td class="text-center"><?=$konversiTotalHargaMasuk;?></td>
-                                                
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-
-                                                <td class="text-center"><?=$totalUnit;?></td>
-                                                <td class="text-center"><?=$konversiHargaUnit;?></td>
-                                                <td class="text-center"><?=$konversiTotalHarga;?></td>
-                                            </tr>
-                                        <?php }?>
-                                        <?php
-                                            $tampilDetailProdukKeluar=mysqli_query($conn,"SELECT tbstokkeluar.tanggalKeluar, tbstokkeluar.Keterangan, tbdetailkeluar.jumlahKeluar, tbdetailkeluar.totalHargaKeluar FROM tbdetailkeluar
-                                            INNER JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar
-                                            WHERE tbdetailkeluar.idProduk='$idProduk' AND tbstokkeluar.Status='1'
-                                            UNION
-                                            SELECT tbretur.tanggalRetur, tbretur.Alasan, tbretur.jumlahRetur, tbretur.totalHargaRetur FROM tbretur
-                                            WHERE tbretur.idProduk='$idProduk' AND tbretur.Status='1'");
+                                            $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE id_produk='$idProduk'");
                                             $inc=1;
-                                            while($data=mysqli_fetch_array($tampilDetailProdukKeluar)){
-                                                $tanggalKeluar = $data['tanggalKeluar'];
-                                                $jumlahKeluar=$data['jumlahKeluar'];
-                                                $Keterangan=$data['Keterangan'];
-                                                $totalHargaKeluar =$data['totalHargaKeluar'];
-                                                $hargaKeluarPerItem=$totalHargaKeluar/$jumlahKeluar;
-                                                $konversiHargaKeluarPerItem= "Rp " . number_format($hargaKeluarPerItem,2,',','.');
-                                                $konversiTotalHargaKeluar= "Rp " . number_format($totalHargaKeluar,2,',','.');
-                                                $totalUnit=$totalUnit-$jumlahKeluar;
-                                                $hargaUnit=$hargaKeluarPerItem;
-                                                $totalHarga=$totalHarga-$totalHargaKeluar;
-                                                $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
-                                                $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
+                                            while($data=mysqli_fetch_array($tampilDetailProduk)){
+                                                // $tanggalKeluar = $data['tanggalKeluar'];
+                                                // $jumlahKeluar=$data['jumlahKeluar'];
+                                                // $Keterangan=$data['Keterangan'];
+                                                // $totalHargaKeluar =$data['totalHargaKeluar'];
+                                                // $hargaKeluarPerItem=$totalHargaKeluar/$jumlahKeluar;
+                                                // $konversiHargaKeluarPerItem= "Rp " . number_format($hargaKeluarPerItem,2,',','.');
+                                                // $konversiTotalHargaKeluar= "Rp " . number_format($totalHargaKeluar,2,',','.');
+                                                // $totalUnit=$totalUnit-$jumlahKeluar;
+                                                // $hargaUnit=$hargaKeluarPerItem;
+                                                // $totalHarga=$totalHarga-$totalHargaKeluar;
+                                                // $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
+                                                // $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
                                             ?>
                                             <tr>
-                                                <td class="text-center"><?=$tanggalKeluar;?></td>
-                                                <td class="text-right"><?=$Keterangan;?></td>
-
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                                
-                                                <td class="text-center"><?=$jumlahKeluar;?></td>
-                                                <td class="text-center"><?=$konversiHargaKeluarPerItem;?></td>
-                                                <td class="text-center"><?=$konversiTotalHargaKeluar;?></td>
-
-                                                <td class="text-center"><?=$totalUnit;?></td>
-                                                <td class="text-center"><?=$konversiHargaUnit;?></td>
-                                                <td class="text-center"><?=$konversiTotalHarga;?></td>
-                                            </tr>
-                                        <?php }?>
-                                        <?php
-                                            $tampilDetailOpname=mysqli_query($conn,"SELECT tbopname.tanggalOpname, tbopname.Keterangan, tbdetailopname.jumlahSistem,tbdetailopname.jumlahFisik, tbdetailopname.totalHargaPenyusutan FROM tbdetailopname
-                                            INNER JOIN tbopname ON tbdetailopname.idOpname=tbopname.idOpname
-                                            WHERE tbdetailopname.idProduk='$idProduk' AND tbopname.Status='1'");
-                                            $inc=1;
-                                            while($data=mysqli_fetch_array($tampilDetailOpname)){
-                                                $tanggalOpname = $data['tanggalOpname'];
-                                                $Keterangan=$data['Keterangan'];
-                                                $jumlahOpname=$data['jumlahFisik'];
-                                                $jumlahSistem=$data['jumlahSistem'];
-
-                                                $Selisih=-($jumlahOpname-$jumlahSistem);
-                                                $totalHargaPenyusutan =-($data['totalHargaPenyusutan']);
-                                                $hargaPenyusutanPerItem=$totalHargaPenyusutan/$Selisih;
-
-                                                $konversiHargaPenyusutanPerItem= "Rp " . number_format($hargaPenyusutanPerItem,2,',','.');
-                                                $konversiTotalHargaPenyusutan= "Rp " . number_format($totalHargaPenyusutan,2,',','.');
-
-                                                $totalHarga=$totalHarga-$totalHargaPenyusutan;
-                                                $hargaUnit=$totalHarga/$jumlahOpname;
-                                                $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
-                                                $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
-                                            ?>
-                                            <tr>
-                                                <td class="text-center"><?=$tanggalOpname;?></td>
-                                                <td class="text-right"><?=$Keterangan;?></td>
-
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                                <td class="text-center">-</td>
-                                                
-                                                <td class="text-center"><?=$Selisih;?></td>
-                                                <td class="text-center"><?=$konversiHargaPenyusutanPerItem;?></td>
-                                                <td class="text-center"><?=$konversiTotalHargaPenyusutan;?></td>
-
-                                                <td class="text-center"><?=$jumlahOpname;?></td>
-                                                <td class="text-center"><?=$konversiHargaUnit;?></td>
-                                                <td class="text-center"><?=$konversiTotalHarga;?></td>
+                                                <td class="text-center"><?=$data['tanggal'];?></td>
+                                                <td class="text-left"><?=$data['keterangan'];?></td>
+                                                <td class="text-center"><?=$data['stok_masuk'];?></td>
+                                                <td class="text-center"><?=$data['stok_keluar'];?></td>
+                                                <td class="text-center"><?=$data['total_stok'];?></td>
                                             </tr>
                                         <?php }?>
                                     </tbody>  

@@ -124,14 +124,21 @@
         $query = mysqli_query($conn,"SELECT * FROM tbdetailmasuk WHERE idBarangMasuk='$idBarangMasuk'");
         $query2=mysqli_query($conn,"UPDATE tbstokmasuk SET Status='1' WHERE idBarangMasuk='$idBarangMasuk'");
         while($r=mysqli_fetch_row($query)){
-            
             // Kueri mengubah data detail barang masuk dan data barang masuk
             if($query2){
                 mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk+'$r[4]' WHERE idProduk='$r[2]'");
-                $_SESSION['terima']='true';
             }else{
                 $_SESSION['gagal']='true'; 
             } 
+        }
+        $query=mysqli_query($conn, "SELECT * FROM tbproduk 
+                LEFT JOIN tbdetailmasuk ON tbproduk.idProduk=tbdetailmasuk.idProduk
+                LEFT JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk 
+                INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
+                WHERE tbstokmasuk.idBarangMasuk='$idBarangMasuk'");
+        while($rowProduk=mysqli_fetch_array($query)){
+            mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokMasuk,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalMasuk']."','".$rowProduk['Pemasok']."','".$rowProduk['jumlahMasuk']."','".$rowProduk['stokProduk']."')");
+            $_SESSION['terima']='true';
         }
     }
 ?>
@@ -391,7 +398,7 @@
                                         <label for="recipient-name" class="col-form-label">ID Barang Masuk:</label>
                                         <input type="text" class="form-control" id="idBarangMasuk" name="idBarangMasuk" value="<?php echo $idBarangMasuk;?>" readonly>
                                     </div>
-                                    <?php if($Status == '0'){?>
+                                    <?php if($Status == 0){?>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Tanggal Masuk:</label>
                                         <input type="date" class="form-control" id="tanggalMasuk" name="tanggalMasuk" value="<?php echo $tanggalMasuk;?>" max="<?= date('Y-m-d'); ?>" required>
@@ -460,7 +467,7 @@
                                         </select>
                                     </div>
                                     <?php }?>
-                                    <?php if($Status == '1'){?>
+                                    <?php if($Status == 1){?>
                                     <?php }else{?>
                                         <button type="submit" class="btn btn-success" name="simpanDataMasuk">
                                             <i class="fa fa-save">Simpan</i>
@@ -553,7 +560,7 @@
                                                     $jumlahMasuk =$data['jumlahMasuk'];
                                                     $totalHargaMasuk=$hargaMasuk*$jumlahMasuk;
                                                     $konversiTotalHargaMasuk = "Rp " . number_format($totalHargaMasuk,2,',','.');
-                                                    $Status=(int) $data['Status'];
+                                                    $Status=$data['Status'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$inc++;?></td>
@@ -703,7 +710,7 @@
 											<!-- Modal Terima -->	
                                         </tbody>
                                     </table>
-                                    <?php if($Status == '0'){?>
+                                    <?php if($Status == 0){?>
                                         <?php 
                                             $jabatan=$_SESSION['Jabatan']=='Owner';
                                             if($jabatan){

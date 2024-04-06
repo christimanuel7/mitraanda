@@ -119,17 +119,35 @@
     // Proses Mengurangi Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Keluar Diconfirm
     if(isset($_POST['confirmBarangKeluar'])){
         $idBarangKeluar= $_POST['idBarangKeluar'];
-        $query= mysqli_query($conn,"SELECT * FROM tbdetailkeluar WHERE idBarangKeluar='$idBarangKeluar'");
-        $query2=mysqli_query($conn,"UPDATE tbstokkeluar SET Status='1' WHERE idBarangKeluar='$idBarangKeluar'");
-        while($r=mysqli_fetch_row($query)){
-
+        $query= mysqli_query($conn,"SELECT * FROM tbdetailkeluar 
+        LEFT JOIN tbproduk ON tbdetailkeluar.idProduk=tbproduk.idProduk
+        WHERE idBarangKeluar='$idBarangKeluar'");
+        while($r=mysqli_fetch_array($query)){
             // Kueri mengubah data detail barang keluar dan data barang keluar
-            if($query2){
-                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$r[4]' WHERE idProduk='$r[2]' AND stokProduk>='$r[4]'");
-                $_SESSION['confirm']='true';
-            }else{
+            if($r['jumlahKeluar']<=$r['stokProduk']){
+                $query2=mysqli_query($conn,"UPDATE tbstokkeluar SET Status='1' WHERE idBarangKeluar='$idBarangKeluar'");
+                if($query2){
+                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahKeluar']."' WHERE idProduk='".$r['idProduk']."'");
+                    $_SESSION['confirm']='true';
+                }else{
+                    $_SESSION['gagal']='true';
+                } 
+            }
+            else{
                 $_SESSION['gagal']='true';
             } 
+        }
+
+        if($_SESSION['gagal']!='true'){
+            $query=mysqli_query($conn, "SELECT * FROM tbproduk 
+            LEFT JOIN tbdetailkeluar ON tbproduk.idProduk=tbdetailkeluar.idProduk
+            LEFT JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar 
+            WHERE tbstokkeluar.idBarangKeluar='$idBarangKeluar'");
+    
+            while($rowProduk=mysqli_fetch_array($query)){
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokKeluar,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalKeluar']."','".$rowProduk['Keterangan']."','".$rowProduk['jumlahKeluar']."','".$rowProduk['stokProduk']."')");
+                $_SESSION['terima']='true';
+            }
         }
     }
 ?>
@@ -408,7 +426,7 @@
                                         <input type="text" class="form-control" id="Keterangan" name="Keterangan" value="<?php echo $Keterangan;?>" readonly>
                                     </div>
                                     <?php }?>
-                                    <?php if($Status == '1'){?>
+                                    <?php if($Status == 1){?>
                                         <button type="submit" class="btn btn-success" name="cetakBonKeluar">
                                             <i class="fa fa-print">Cetak Bon</i>
                                         </button>
@@ -480,7 +498,7 @@
                                                 <th class="text-center">Harga per Item</th>
                                                 <th class="text-center">Jumlah</th>
                                                 <th class="text-center">Total</th>
-                                                <?php if($Status=='0'){?>
+                                                <?php if($Status==0){?>
                                                     <th class="text-center">Aksi</th>
                                                 <?php }?>
                                             </tr>
@@ -514,7 +532,7 @@
                                                 <td class="text-center"><?=$konversiHargaKeluar;?></td>
                                                 <td class="text-center"><?=$jumlahKeluar.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$konversiTotalHargaKeluar;?></td>
-                                                <?php if($Status=='0'){?>
+                                                <?php if($Status==0){?>
                                                     <td class="text-center">
                                                         <button type="button" class="btn btn-warning btn-sm mb-4" data-toggle="modal" data-target="#ubah<?=$idDetailKeluar;?>">
                                                             <i class="fas fa-edit">Ubah</i>
@@ -649,7 +667,7 @@
                                         </tbody>
                                     </table>
                                     <?php 
-									if($Status == '1'){?>
+									if($Status == 1){?>
                                     <?php }else{?>
                                             <?php 
                                                 $jabatan=$_SESSION['Jabatan']=='Owner';

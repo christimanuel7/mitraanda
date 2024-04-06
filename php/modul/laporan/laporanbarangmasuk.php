@@ -299,7 +299,7 @@
                                                 INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
                                                 INNER JOIN tbpengguna ON tbstokmasuk.idPengguna=tbpengguna.idPengguna
                                                 WHERE tanggalMasuk $Periode AND tbstokmasuk.Status='1'
-                                                ORDER BY idDetailMasuk");
+                                                ORDER BY idDetailMasuk DESC");
                                                 $inc=1;
                                                 while($data=mysqli_fetch_array($tampilLaporanBarangMasuk)){
                                                     $idPengguna = $data['tanggalMasuk'];

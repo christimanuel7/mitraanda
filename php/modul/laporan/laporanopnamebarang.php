@@ -310,7 +310,7 @@
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
                                                 INNER JOIN tbpengguna ON tbopname.idPengguna=tbpengguna.idPengguna
                                                 WHERE tanggalOpname $Periode AND tbopname.Status='1'
-                                                ORDER BY idDetailOpname");
+                                                ORDER BY idDetailOpname DESC");
                                                 $inc=1;
                                                 while($data=mysqli_fetch_array($tampilLaporanOpname)){
                                                     $idDetailOpname = $data['idDetailOpname'];

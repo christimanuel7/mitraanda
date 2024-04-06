@@ -294,7 +294,7 @@
                                                 INNER JOIN tbproduk ON tbdetailkeluar.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
                                                 WHERE tanggalKeluar $Periode AND tbstokkeluar.Status='1'
-                                                ORDER BY idDetailKeluar");
+                                                ORDER BY idDetailKeluar DESC");
                                                 $inc=1;
                                                 while($data=mysqli_fetch_array($tampilLaporanBarangKeluar)){
                                                     $idDetailKeluar = $data['idDetailKeluar'];
