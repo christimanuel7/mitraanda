@@ -5,8 +5,8 @@
     $_SESSION['tambah']='false';
     $_SESSION['ubah']='false';
     $_SESSION['hapus']='false';
-    $_SESSION['terima']='false';
-    $_SESSION['tolak']='false';
+    $_SESSION['confirm']='false';
+    $_SESSION['cancel']='false';
     $_SESSION['gagal']='false';
 
     // Mengambil data idBarangKeluar
@@ -101,7 +101,7 @@
         } 
     }
 
-    // Proses Menghapus Data Barang Keluar, Ketika Data Barang Keluar Ditolak
+    // Proses Menghapus Data Barang Keluar, Ketika Data Barang Keluar Dicancel
     if(isset($_POST['hapusBarangKeluar'])){
         $idBarangKeluar= $_POST['idBarangKeluar'];
         $hapusDetailKeluar =mysqli_query($conn,"DELETE FROM tbdetailkeluar WHERE idBarangKeluar='$idBarangKeluar'");
@@ -110,14 +110,14 @@
         // Kueri menghapus data barang keluar dan data detail barang keluar
         if($hapusProdukKeluar OR $hapusDetailKeluar){
             echo '<script type="text/javascript">window.location.href = "databarangkeluar.php";</script>';
-            $_SESSION['tolak']='true';
+            $_SESSION['cancel']='true';
         }else{
             $_SESSION['gagal']='true';
         } 
     }
 
-    // Proses Mengurangi Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Keluar Ditolak
-    if(isset($_POST['terimaBarangKeluar'])){
+    // Proses Mengurangi Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Keluar Diconfirm
+    if(isset($_POST['confirmBarangKeluar'])){
         $idBarangKeluar= $_POST['idBarangKeluar'];
         $query= mysqli_query($conn,"SELECT * FROM tbdetailkeluar WHERE idBarangKeluar='$idBarangKeluar'");
         $query2=mysqli_query($conn,"UPDATE tbstokkeluar SET Status='1' WHERE idBarangKeluar='$idBarangKeluar'");
@@ -126,7 +126,7 @@
             // Kueri mengubah data detail barang keluar dan data barang keluar
             if($query2){
                 mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$r[4]' WHERE idProduk='$r[2]' AND stokProduk>='$r[4]'");
-                $_SESSION['terima']='true';
+                $_SESSION['confirm']='true';
             }else{
                 $_SESSION['gagal']='true';
             } 
@@ -372,9 +372,9 @@
                                 echo '<div class="alert alert-danger" role="alert">
                                     Produk berhasil dihapus pada data detail barang keluar.
                                 </div>';
-                            }else if($_SESSION['terima']=='true'){
+                            }else if($_SESSION['confirm']=='true'){
                                 echo '<div class="alert alert-success" role="alert">
-                                    Data barang keluar berhasil diterima.
+                                    Data barang keluar berhasil diconfirm.
                                 </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
@@ -589,13 +589,13 @@
                                                 };
                                             ?>
 
-                                            <!-- Modal Tolak -->
-                                            <div class="modal fade" id="tolak<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <!-- Modal Cancel -->
+                                            <div class="modal fade" id="cancel<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <form method="POST">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menolak permintaan barang keluar tersebut?</h5>
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menghapus data barang keluar tersebut?</h5>
                                                                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">×</span>
                                                                     </button>
@@ -609,15 +609,15 @@
                                                     </form>   
                                                 </div>
                                             </div>
-                                            <!-- /Modal Tolak -->
+                                            <!-- /Modal Cancel -->
 
-                                            <!-- Modal Terima -->
-                                            <div class="modal fade" id="terima<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <!-- Modal Confirm -->
+                                            <div class="modal fade" id="confirm<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <form method="POST">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menerima permintaan barang keluar tersebut?</h5>
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk mengconfirm permintaan barang keluar tersebut?</h5>
                                                                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">×</span>
                                                                     </button>
@@ -625,13 +625,13 @@
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="idBarangKeluar" value="<?=$idBarangKeluar;?>">
                                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                                    <button type="submit" class="btn btn-success" name="terimaBarangKeluar">Terima</button>
+                                                                    <button type="submit" class="btn btn-success" name="confirmBarangKeluar">Confirm</button>
                                                                 </div>
                                                             </div>
                                                     </form>   
                                                 </div>
                                             </div>
-                                            <!-- /Modal Terima -->
+                                            <!-- /Modal Confirm -->
                                         </tbody>
                                     </table>
                                     <?php 
@@ -643,8 +643,8 @@
                                                 if($jabatan OR $jabatan2){
                                             ?>
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#terima<?=$idBarangKeluar;?>"><i class="fas fa-check">Terima</i></button>
-                                                <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#tolak<?=$idBarangKeluar;?>"><i class="fas fa-times">Tolak</i></button>
+                                                <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirm<?=$idBarangKeluar;?>"><i class="fas fa-check">Confirm</i></button>
+                                                <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#cancel<?=$idBarangKeluar;?>"><i class="fas fa-times">Cancel</i></button>
                                             </div>
                                             <?php 
                                                 }

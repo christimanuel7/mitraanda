@@ -93,8 +93,8 @@
                     </div>
                 </li>    
 
-                <!-- Nav Item - Stok -->
-                <li class="nav-item">
+               <!-- Nav Item - Stok -->
+               <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStok"
                     aria-expanded="true" aria-controls="collapseStok">
                         <i class="fas fa-fw fa-boxes"></i>
@@ -102,6 +102,76 @@
                     </a>
                     <div id="collapseStok" class="collapse" aria-labelledby="headingBarang" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Checker';
+                                if($jabatan OR $jabatan2){
+                            ?>
+							<a class="collapse-item" href="../barangmasuk/databarangmasuk.php"><i class="fas fa-fw fa-arrow-down"></i>Barang Masuk</a>
+                            <?php 
+                               }
+                            ?>
+                            <?php 
+                                $jabatan=$_SESSION['Jabatan']=='Owner';
+                                $jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+                                if($jabatan OR $jabatan2){
+                            ?>
+                            <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
+							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
+                            <?php 
+                               }
+                            ?>
+                        </div>
+                    </div>
+                </li>
+
+               <!-- Nav Item - Opname- -->
+				<?php 
+                    $jabatan=$_SESSION['Jabatan']=='Owner';
+                    $jabatan2=$_SESSION['Jabatan']=='Checker';
+                    if($jabatan OR $jabatan2){
+                ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="../opname/dataopname.php">
+                    <i class="fas fa-fw fa-search"></i>
+                    <span>Opname Stok</span></a>
+                </li>
+				<?php 
+                    }
+                ?>
+
+                <!-- Nav Item - Pengguna -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengguna"
+                    aria-expanded="true" aria-controls="collapsePengguna">
+                        <i class="fas fa-fw fa-user"></i>
+                        <span>Pengguna</span>
+                    </a>
+                        
+                    <div id="collapsePengguna" class="collapse" aria-labelledby="headingPengguna" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+                            $jabatan=$_SESSION['Jabatan']=='Owner';
+                            if($jabatan){
+                            ?>
+                            <a class="collapse-item" href="../pengguna/pengguna.php"><i class="fas fa-fw fa-users"></i>Kelola Data Pengguna</a>
+                            <?php 
+                            }?> 
+                            <a class="collapse-item" href="../pengguna/ubahpassword.php"><i class="fas fa-fw fa-lock"></i>Ubah Password</a>
+                        </div>
+                    </div>
+                </li> 
+               
+                <!-- Nav Item - Laporan -->
+				<li class="nav-item">
+					<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
+					aria-expanded="true" aria-controls="collapseLaporan">
+						<i class="fas fa-fw fa-clipboard-list"></i>
+						<span>Laporan</span>
+					</a>
+						
+					<div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
+						<div class="bg-white py-2 collapse-inner rounded">
                             <?php 
                                 $jabatan=$_SESSION['Jabatan']=='Owner';
                                 $jabatan2=$_SESSION['Jabatan']=='Checker';

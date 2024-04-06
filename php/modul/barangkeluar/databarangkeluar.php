@@ -3,8 +3,8 @@
     require '../../ceklogin.php';
 		
     $_SESSION['tambah']='false';
-    $_SESSION['terima']='false';
-    $_SESSION['tolak']='false';
+    $_SESSION['confirm']='false';
+    $_SESSION['cancel']='false';
     $_SESSION['gagal']='false';
 
     //Proses Mengecek Jabatan yang Dapat Mengakses Halaman Satuan
@@ -272,9 +272,9 @@
                                 echo '<div class="alert alert-primary" role="alert">
                                     Data barang keluar berhasil ditambah.
                                 </div>';
-                            }else if($_SESSION['tolak']=='true'){
+                            }else if($_SESSION['cancel']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
-                                    Data barang keluar berhasil ditolak.
+                                    Data barang keluar berhasil dihapus.
                                 </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
