@@ -134,14 +134,30 @@
                         
                     <div id="collapseStok" class="collapse" aria-labelledby="headingBarang" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
 							<a class="collapse-item" href="databarangmasuk.php"><i class="fas fa-fw fa-arrow-down"></i>Barang Masuk</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+								if($jabatan OR $jabatan2){
+							?>
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
+                            <?php 
+								}
+							?>
                         </div>
                     </div>
                 </li> 
 
-				 <?php 
+				<?php 
                     $jabatan=$_SESSION['Jabatan']=='Owner';
                     $jabatan2=$_SESSION['Jabatan']=='Checker';
                     if($jabatan OR $jabatan2){
@@ -186,9 +202,25 @@
                         
                     <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?> 
                             <a class="collapse-item" href="../laporan/laporanbarangmasuk.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Masuk</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+								if($jabatan OR $jabatan2){
+							?> 
                             <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
                             <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
+                            <?php 
+								}
+							?> 
 							<?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
@@ -363,7 +395,7 @@
                                                     <td><?=$Pemasok;?></td>
                                                     <td class="text-center"><?=$jumlahItem;?></td>
                                                     <td class="text-center">
-                                                        <a href="download.php?id=<?php echo $idBarangMasuk;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
+                                                        <a href="downloadbuktimasuk.php?id=<?php echo $idBarangMasuk;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
                                                     </td>
                                                     <td class="text-center"><?=$Penerima;?></td>
                                                     <td class="text-center">

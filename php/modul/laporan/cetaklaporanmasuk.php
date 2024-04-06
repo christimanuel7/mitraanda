@@ -3,6 +3,10 @@
     require ('library/fpdf.php');
     include '../../fungsi.php';
 
+    if($_SESSION['Jabatan']=='Penjaga Toko'){
+		header('location:../../index.php');
+	}
+
      // Mengambil Masukan Tanggal Awal dan Akhir
      $awal=$_GET['awal'];
      $akhir=$_GET['akhir'];

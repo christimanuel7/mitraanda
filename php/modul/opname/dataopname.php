@@ -134,13 +134,21 @@
                         
                     <div id="collapseStok" class="collapse" aria-labelledby="headingBarang" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-							<a class="collapse-item" href="../barangmasuk/databarangmasuk.php"><i class="fas fa-fw fa-arrow-down"></i>Barang Masuk</a>
-                            <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
-							<?php 
+                            <?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?>
+							<a class="collapse-item" href="../barangmasuk/databarangmasuk.php"><i class="fas fa-fw fa-arrow-down"></i>Barang Masuk</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+								if($jabatan OR $jabatan2){
+							?>
+                            <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
 							<?php 
 								}
@@ -194,16 +202,30 @@
                     </a>
                     <div id="collapseLaporan" class="collapse" aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="../laporan/laporanbarangmasuk.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Masuk</a>
-                            <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-							<?php 
+                            <?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?> 
+                            <a class="collapse-item" href="../laporan/laporanbarangmasuk.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Masuk</a>
+                            <?php 
+							}?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+								if($jabatan OR $jabatan2){
+							?> 
+                            <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
                             <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
+                            <?php 
+							}?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?> 
 							<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
-							<?php 
+                            <?php 
 							}?>
                         </div>
                     </div>
