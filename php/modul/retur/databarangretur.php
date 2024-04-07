@@ -34,15 +34,10 @@
         while($r=mysqli_fetch_array($rowRetur)){
             // Kueri mengubah data retur
             if($r['jumlahRetur']<=$r['stokProduk']){
-                $queryUpdate=mysqli_query($conn,"UPDATE tbretur SET Status='1' WHERE idBarangRetur='$idRetur'");
-                if($queryUpdate){
-                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
-                    $_SESSION['confirm']='true';
-                }else{
-                    $_SESSION['gagal']='true';
-                } 
-            }
-            else{
+                mysqli_query($conn,"INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
+                mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
+                $_SESSION['confirm']='true';
+            }else{
                 $_SESSION['gagal']='true';
             } 
         }
