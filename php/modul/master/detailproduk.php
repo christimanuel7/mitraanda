@@ -383,11 +383,14 @@
                                 <table class="table table-stripped table-bordered table-hover" id="dtLaporanMasuk" width="100%" cellspacing="0">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th class="text-center">Tanggal</th>
-                                            <th class="text-center">Dari/Untuk</th>
-                                            <th class="text-center">Penambahan Stok</th>
-                                            <th class="text-center">Pengurangan Stok</th>
-                                            <th class="text-center">Sisa Stok</th>
+                                            <th rowspan="2" class="text-center">Tanggal</th>
+                                            <th rowspan="2" class="text-center">Keterangan</th>
+                                            <th colspan="2" class="text-center">Jumlah Barang</th>
+                                            <th rowspan="2" class="text-center">Sisa Stok</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center">Masuk</th>
+                                            <th class="text-center">Keluar</th>
                                         </tr>
                                     </thead>
                                     <tbody>

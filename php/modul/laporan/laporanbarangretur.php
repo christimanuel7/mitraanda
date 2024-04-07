@@ -299,8 +299,8 @@
                                                 INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
                                                 INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
-                                                WHERE tbretur.Status='1' AND tanggalRetur $Periode"
-                                                ORDER BY idRetur DESC);
+                                                WHERE tbretur.Status='1' AND tanggalRetur $Periode
+                                                ORDER BY idBarangRetur DESC");
                                                 $inc=1;
                                                 while($data=mysqli_fetch_array($tampilLaporanBarangRetur)){
                                                     $idBarangRetur = $data['idBarangRetur'];

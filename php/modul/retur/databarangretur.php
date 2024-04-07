@@ -36,7 +36,7 @@
             if($r['jumlahRetur']<=$r['stokProduk']){
                 $queryUpdate=mysqli_query($conn,"UPDATE tbretur SET Status='1' WHERE idBarangRetur='$idRetur'");
                 if($queryUpdate){
-                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$jumlahRetur."' WHERE idProduk='".$r['idProduk']."'");
+                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
                     $_SESSION['confirm']='true';
                 }else{
                     $_SESSION['gagal']='true';
