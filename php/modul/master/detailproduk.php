@@ -392,7 +392,7 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                            $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE id_produk='$idProduk'");
+                                            $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE idProduk='$idProduk'");
                                             $inc=1;
                                             while($data=mysqli_fetch_array($tampilDetailProduk)){
                                                 // $tanggalKeluar = $data['tanggalKeluar'];
@@ -409,11 +409,11 @@
                                                 // $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
                                             ?>
                                             <tr>
-                                                <td class="text-center"><?=$data['tanggal'];?></td>
-                                                <td class="text-left"><?=$data['keterangan'];?></td>
-                                                <td class="text-center"><?=$data['stok_masuk'];?></td>
-                                                <td class="text-center"><?=$data['stok_keluar'];?></td>
-                                                <td class="text-center"><?=$data['total_stok'];?></td>
+                                                <td class="text-center"><?=$data['Tanggal'];?></td>
+                                                <td class="text-left"><?=$data['Keterangan'];?></td>
+                                                <td class="text-center"><?=$data['stokMasuk'];?></td>
+                                                <td class="text-center"><?=$data['stokKeluar'];?></td>
+                                                <td class="text-center"><?=$data['totalStok'];?></td>
                                             </tr>
                                         <?php }?>
                                     </tbody>  

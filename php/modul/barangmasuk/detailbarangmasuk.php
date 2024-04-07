@@ -118,25 +118,25 @@
         } 
     }
     
-    // Proses Mengurangi Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Keluar Ditolak
+    // Proses Menambah Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Masuk Diterima
     if(isset($_POST['terimaBarangMasuk'])){
         $idBarangMasuk= $_POST['idBarangMasuk'];
-        $query = mysqli_query($conn,"SELECT * FROM tbdetailmasuk WHERE idBarangMasuk='$idBarangMasuk'");
-        $query2=mysqli_query($conn,"UPDATE tbstokmasuk SET Status='1' WHERE idBarangMasuk='$idBarangMasuk'");
-        while($r=mysqli_fetch_row($query)){
+        $queryDetailMasuk = mysqli_query($conn,"SELECT * FROM tbdetailmasuk WHERE idBarangMasuk='$idBarangMasuk'");
+        $queryStokMasuk=mysqli_query($conn,"UPDATE tbstokmasuk SET Status='1' WHERE idBarangMasuk='$idBarangMasuk'");
+        while($r=mysqli_fetch_row($queryDetailMasuk)){
             // Kueri mengubah data detail barang masuk dan data barang masuk
-            if($query2){
+            if($queryStokMasuk){
                 mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk+'$r[4]' WHERE idProduk='$r[2]'");
             }else{
                 $_SESSION['gagal']='true'; 
             } 
         }
-        $query=mysqli_query($conn, "SELECT * FROM tbproduk 
+        $queryProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
                 LEFT JOIN tbdetailmasuk ON tbproduk.idProduk=tbdetailmasuk.idProduk
                 LEFT JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk 
                 INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
                 WHERE tbstokmasuk.idBarangMasuk='$idBarangMasuk'");
-        while($rowProduk=mysqli_fetch_array($query)){
+        while($rowProduk=mysqli_fetch_array($queryProduk)){
             mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokMasuk,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalMasuk']."','".$rowProduk['Pemasok']."','".$rowProduk['jumlahMasuk']."','".$rowProduk['stokProduk']."')");
             $_SESSION['terima']='true';
         }
@@ -468,13 +468,13 @@
                                     </div>
                                     <?php }?>
                                     <?php if($Status == 1){?>
-                                    <?php }else{?>
                                         <button type="submit" class="btn btn-success" name="simpanDataMasuk">
                                             <i class="fa fa-save">Simpan</i>
                                         </button>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
                                             <i class="fa fa-plus">Tambah</i>
                                         </button>
+                                    <?php }else{?>
                                     <?php }?>
                                 </form>
                             </div>
@@ -497,7 +497,7 @@
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailmasuk.idProduk FROM tbdetailmasuk WHERE tbdetailmasuk.idBarangMasuk = '$fetchIdBarangMasuk') ORDER BY tbproduk.Produk ");                                                                while ($data = mysqli_fetch_array($query)) {
                                                                 ?>
-                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'];?></option>
+                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk']?></option>
                                                                 <?php
                                                                 }
                                                             ?>
@@ -569,7 +569,7 @@
                                                 <td class="text-center"><?=$jumlahMasuk.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$konversiTotalHargaMasuk;?></td>
                                                 <td class="text-center">
-                                                    <?php if($Status=='1'){?>
+                                                    <?php if($Status == 1){?>
                                                         <i class="fas fa-check">Disetujui</i>
                                                     <?php }else{?>
                                                         <button type="button" class="btn btn-warning btn-sm mb-4" data-toggle="modal" data-target="#ubah<?=$idDetailMasuk;?>">
@@ -597,12 +597,12 @@
                                                                 <div class="form-group">
                                                                     <label for="message-text" class="col-form-label">Produk:</label>
                                                                     <select class="form-control" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
-                                                                            <option value="<?php echo $idProduk;?>" selected><?php echo $Produk;?></option>
+                                                                            <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' - Stok: '.$data['stokProduk'];?></option>
                                                                         <?php
                                                                             $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
-                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'];?></option>
+                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk'];?></option>
                                                                             <?php
                                                                             }
                                                                         ?>
@@ -614,7 +614,7 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Jumlah Masuk:</label>
-                                                                    <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="0" value="<?php echo $jumlahMasuk;?>" oninput="validity.valid||(value='');" required>
+                                                                    <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="1" value="<?php echo $jumlahMasuk;?>" oninput="validity.valid||(value='');" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -710,7 +710,7 @@
 											<!-- Modal Terima -->	
                                         </tbody>
                                     </table>
-                                    <?php if($Status == 0){?>
+                                    <?php if($Status == 1){?>
                                         <?php 
                                             $jabatan=$_SESSION['Jabatan']=='Owner';
                                             if($jabatan){

@@ -8,6 +8,7 @@
     $_SESSION['confirm']='false';
     $_SESSION['cancel']='false';
     $_SESSION['gagal']='false';
+    $_SESSION['over']='false';
 
     // Mengambil data idBarangKeluar
 	$fetchIdBarangKeluar = $_GET['id'];
@@ -19,6 +20,7 @@
 	$Keterangan = $rowBarangKeluar['Keterangan'];
 	$Status = (int) $rowBarangKeluar['Status'];
 		
+    // Proses Menyimpan Perubahan Informasi Data Barang Keluar
     if(isset($_POST['simpanDataKeluar'])){
         $idBarangKeluar = $_POST['idBarangKeluar'];
         $tanggalKeluar = $_POST['tanggalKeluar'];
@@ -43,6 +45,7 @@
 
         $queryProduk= mysqli_query($conn, "SELECT * FROM tbproduk WHERE idProduk='$idProduk'");
 	    $rowProduk = mysqli_fetch_array($queryProduk);
+        $stokProduk = $rowProduk['stokProduk'];
 	    $hargaJual = $rowProduk['hargaJual'];
 
         $noUrut=mysqli_num_rows($cekIDKeluar);
@@ -55,14 +58,13 @@
             $Jumlah="01";
         }
         $idDetailKeluar=$idBarangKeluar."-".$Jumlah;
-        $tambahDetailProdukKeluar = mysqli_query($conn,"INSERT INTO tbdetailkeluar(idDetailKeluar,idBarangKeluar,idProduk,hargaKeluar,jumlahKeluar) VALUES ('$idDetailKeluar','$idBarangKeluar','$idProduk','$hargaJual','$jumlahKeluar')");
         
-        // Kueri menambah data detail barang keluar
-        if($tambahDetailProdukKeluar){
+        if($jumlahKeluar<=$stokProduk){
+            mysqli_query($conn,"INSERT INTO tbdetailkeluar(idDetailKeluar,idBarangKeluar,idProduk,hargaKeluar,jumlahKeluar) VALUES ('$idDetailKeluar','$idBarangKeluar','$idProduk','$hargaJual','$jumlahKeluar')");
             $_SESSION['tambah']='true';
         }else{
-            $_SESSION['gagal']='true';
-        } 
+            $_SESSION['over']='true';
+        }
     }
 
     // Proses Mengubah Detail Produk Barang Keluar, Ketika Data Detail Barang Keluar Diubah
@@ -75,15 +77,14 @@
 
         $queryProduk= mysqli_query($conn, "SELECT * FROM tbproduk WHERE idProduk='$idProduk'");
 	    $rowProduk = mysqli_fetch_array($queryProduk);
+        $stokProduk = $rowProduk['stokProduk'];
 	    $hargaJual = $rowProduk['hargaJual'];
 
-        $ubahDetailProdukKeluar = mysqli_query($conn,"UPDATE tbdetailkeluar SET idProduk='$idProduk',hargaKeluar='$hargaJual',jumlahKeluar='$jumlahKeluar' WHERE idDetailKeluar='$idDetailKeluar'");
-        
-        // Kueri mengubah data detail barang keluar
-        if($ubahDetailProdukKeluar){
+        if($jumlahKeluar<=$stokProduk){
+            mysqli_query($conn,"UPDATE tbdetailkeluar SET idProduk='$idProduk',hargaKeluar='$hargaJual',jumlahKeluar='$jumlahKeluar' WHERE idDetailKeluar='$idDetailKeluar'");
             $_SESSION['ubah']='true';
         }else{
-            $_SESSION['gagal']='true';
+            $_SESSION['over']='true';
         } 
     }
 
@@ -119,14 +120,14 @@
     // Proses Mengurangi Stok Data Produk dan Mengubah Status Data Barang Keluar, Ketika Data Barang Keluar Diconfirm
     if(isset($_POST['confirmBarangKeluar'])){
         $idBarangKeluar= $_POST['idBarangKeluar'];
-        $query= mysqli_query($conn,"SELECT * FROM tbdetailkeluar 
+        $rowDetailKeluar= mysqli_query($conn,"SELECT * FROM tbdetailkeluar 
         LEFT JOIN tbproduk ON tbdetailkeluar.idProduk=tbproduk.idProduk
         WHERE idBarangKeluar='$idBarangKeluar'");
-        while($r=mysqli_fetch_array($query)){
+        while($r=mysqli_fetch_array($rowDetailKeluar)){
             // Kueri mengubah data detail barang keluar dan data barang keluar
             if($r['jumlahKeluar']<=$r['stokProduk']){
-                $query2=mysqli_query($conn,"UPDATE tbstokkeluar SET Status='1' WHERE idBarangKeluar='$idBarangKeluar'");
-                if($query2){
+                $queryUpdate=mysqli_query($conn,"UPDATE tbstokkeluar SET Status='1' WHERE idBarangKeluar='$idBarangKeluar'");
+                if($queryUpdate){
                     mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahKeluar']."' WHERE idProduk='".$r['idProduk']."'");
                     $_SESSION['confirm']='true';
                 }else{
@@ -134,21 +135,23 @@
                 } 
             }
             else{
-                $_SESSION['gagal']='true';
+                $_SESSION['over']='true';
             } 
         }
 
         if($_SESSION['gagal']!='true'){
-            $query=mysqli_query($conn, "SELECT * FROM tbproduk 
+            $rowProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
             LEFT JOIN tbdetailkeluar ON tbproduk.idProduk=tbdetailkeluar.idProduk
             LEFT JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar 
             WHERE tbstokkeluar.idBarangKeluar='$idBarangKeluar'");
     
-            while($rowProduk=mysqli_fetch_array($query)){
-                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokKeluar,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalKeluar']."','".$rowProduk['Keterangan']."','".$rowProduk['jumlahKeluar']."','".$rowProduk['stokProduk']."')");
+            while($r2=mysqli_fetch_array($rowProduk)){
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokKeluar,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalKeluar']."','".$r2['Keterangan']."','".$r2['jumlahKeluar']."','".$r2['stokProduk']."')");
                 $_SESSION['terima']='true';
             }
-        }
+        }else{
+            $_SESSION['gagal']='true';
+        } 
     }
 ?>
 
@@ -394,6 +397,10 @@
                                 echo '<div class="alert alert-success" role="alert">
                                     Data barang keluar berhasil diconfirm.
                                 </div>';
+                            }else if($_SESSION['over']=='true'){
+                                echo '<div class="alert alert-secondary" role="alert">
+                                    Jumlah masukan produk yang keluar melebihi stok produk.
+                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
                                     Data barang keluar tidak terkoneksi.
@@ -457,10 +464,10 @@
                                                         <label for="exampleFormControlSelect1">Produk:</label>
                                                         <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
                                                             <?php
-                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
+                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailkeluar.idProduk FROM tbdetailkeluar WHERE tbdetailkeluar.idBarangKeluar = '$fetchIdBarangKeluar') ORDER BY tbproduk.Produk ");       
                                                                 while ($data = mysqli_fetch_array($query)) {
                                                                 ?>
-                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' ('."Rp " . number_format($data['hargaJual'],2,',','.').')'.' - Stock: '.$data['stokProduk'];?></option>
+                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' ('."Rp " . number_format($data['hargaJual'],2,',','.').')'.' - Stok: '.$data['stokProduk'];?></option>
                                                                 <?php
                                                                 }
                                                             ?>
@@ -559,12 +566,12 @@
                                                                 <div class="form-group">
                                                                     <label for="message-text" class="col-form-label">Produk:</label>
                                                                     <select class="form-control" id="idProduk" name="idProduk">
-                                                                        <option value="<?php echo $idProduk;?>"><?php echo $Produk.' ('."Rp " . number_format($data['hargaKeluar'],2,',','.').') - Stock: '.$stokProduk;?></option>
+                                                                        <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' ('."Rp " . number_format($data['hargaKeluar'],2,',','.').') - Stok: '.$stokProduk;?></option>
                                                                         <?php
                                                                             $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
-                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' ('."Rp " . number_format($data['hargaJual'],2,',','.'). ') - Stock: '.$data['stokProduk'];?></option>
+                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' ('."Rp " . number_format($data['hargaJual'],2,',','.'). ') - Stok: '.$data['stokProduk'];?></option>
                                                                             <?php
                                                                             }
                                                                         ?>

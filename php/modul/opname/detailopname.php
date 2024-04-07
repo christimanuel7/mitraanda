@@ -13,13 +13,13 @@
     $_SESSION['terima']='false';
     $_SESSION['tolak']='false';
     $_SESSION['gagal']='false';
+    $_SESSION['over']='false';
 
     // Mengambil data idOpname
 	$fetchIdOpname = $_GET['id'];
     $query=mysqli_query($conn,"SELECT * FROM tbopname
     INNER JOIN tbpengguna ON tbopname.idPengguna=tbpengguna.idPengguna
-    WHERE idOpname='$fetchIdOpname'
-    ORDER BY idOpname;");
+    WHERE idOpname='$fetchIdOpname';");
 	$rowBarangOpname = mysqli_fetch_array($query);
 
 	$idOpname=$rowBarangOpname['idOpname'];
@@ -29,11 +29,14 @@
     $Pemeriksa=$rowBarangOpname['Nama'];
     $Status=(int) $rowBarangOpname['Status'];
 
+    // 
     if(isset($_POST['tambahDetailOpname'])){
         $idOpname= $_POST['idOpname'];
         $idProduk= $_POST['idProduk'];
 
-        $jumlahSistem=$row['stokProduk'];
+        $queryProduk=mysqli_query($conn, "SELECT stokProduk FROM tbproduk WHERE idProduk='$idProduk'");
+        $rowProduk=mysqli_fetch_array($queryProduk);
+        $jumlahSistem=$rowProduk['stokProduk'];
         $jumlahOpname=$_POST['jumlahOpname'];
         $Selisih=$jumlahOpname-$jumlahSistem;
 
@@ -47,37 +50,38 @@
         }
         $idDetailOpname=$idOpname."-".$Jumlah;
         $Alasan= $_POST['Alasan'];
-        $tambahDetailOpname = mysqli_query($conn,"INSERT INTO tbdetailopname(idDetailOpname,idOpname,idProduk,jumlahSistem,jumlahFisik,Alasan) VALUES ('$idDetailOpname','$idOpname','$idProduk','$jumlahSistem','$jumlahOpname','$Alasan')");
         
         // Kueri menambah data detail barang masuk
-        if($tambahDetailOpname){
+        if($jumlahOpname<=$jumlahSistem){
+            mysqli_query($conn,"INSERT INTO tbdetailopname(idDetailOpname,idOpname,idProduk,jumlahSistem,jumlahFisik,Alasan) VALUES ('$idDetailOpname','$idOpname','$idProduk','$jumlahSistem','$jumlahOpname','$Alasan')");
             $_SESSION['tambah']='true'; 
         }else{
-            $_SESSION['gagal']='true';
+            $_SESSION['over']='true';
         } 
     }
         
+    // 
     if(isset($_POST['ubahDetailOpname'])){
         $idOpname= $_POST['idOpname'];
         $idProduk= $_POST['idProduk'];
         $idDetailOpname= $_POST['idDetailOpname'];
         
-        $row=mysqli_fetch_array($queryHargaPenyusutan);
+        $queryProduk=mysqli_query($conn, "SELECT stokProduk FROM tbproduk WHERE idProduk='$idProduk'");
+        $rowProduk=mysqli_fetch_array($queryProduk);
+        $jumlahSistem=$rowProduk['stokProduk'];
         $jumlahOpname= $_POST['jumlahOpname'];
-        $jumlahSistem=$row['stokProduk'];
         $Selisih=$jumlahOpname-$jumlahSistem;
-
         $Alasan= $_POST['Alasan'];
-        $ubahDetailOpname = mysqli_query($conn,"UPDATE tbdetailopname SET idProduk='$idProduk',jumlahFisik='$jumlahOpname',jumlahSistem='$jumlahSistem',Alasan='$Alasan',totalHargaPenyusutan='$totalHargaPenyusutan' WHERE idDetailOpname='$idDetailOpname'");
-        
-        // Kueri mengubah data detail barang masuk
-        if($ubahDetailOpname){
+
+        if($jumlahOpname<=$jumlahSistem){
+            mysqli_query($conn,"UPDATE tbdetailopname SET idProduk='$idProduk',jumlahFisik='$jumlahOpname',jumlahSistem='$jumlahSistem',Alasan='$Alasan' WHERE idDetailOpname='$idDetailOpname'");
             $_SESSION['ubah']='true'; 
         }else{
-            $_SESSION['gagal']='true';  
+            $_SESSION['over']='true';
         } 
     }
 
+    // 
     if(isset($_POST['hapusDetailOpname'])){
         $idOpname= $_POST['idOpname'];
         $idDetailOpname= $_POST['idDetailOpname'];
@@ -91,6 +95,7 @@
         } 
     }
 
+    // 
     if(isset($_POST['hapusOpname'])){
         $idOpname= $_POST['idOpname'];
         $hapusDetailOpname =mysqli_query($conn,"DELETE FROM tbdetailopname WHERE idOpname='$idOpname'");
@@ -105,18 +110,40 @@
         } 
     }
  
+    // 
     if(isset($_POST['terimaOpname'])){
         $idOpname= $_POST['idOpname'];
-        $query = mysqli_query($conn,"SELECT * FROM tbdetailopname WHERE idOpname='$idOpname'");
-        $query2=mysqli_query($conn,"UPDATE tbopname SET Status='1' WHERE idOpname='$idOpname'");
-        while($r=mysqli_fetch_row($query)){
-            // Kueri mengubah data detail barang masuk dan data barang masuk
-            if($query2){
-                mysqli_query($conn,"UPDATE tbproduk SET stokProduk='$r[4]' WHERE idProduk='$r[2]'");
-                $_SESSION['terima']='true';
-            }else{
-                $_SESSION['gagal']='true';
+        $rowDetailOpname = mysqli_query($conn,"SELECT * FROM tbdetailopname 
+        INNER JOIN tbproduk ON tbdetailopname.idProduk=tbproduk.idProduk
+        WHERE idOpname='$idOpname'");
+        $rowOpname=mysqli_query($conn,"UPDATE tbopname SET Status='1' WHERE idOpname='$idOpname'");
+
+        while($r=mysqli_fetch_array($rowDetailOpname)){
+            if($r['jumlahFisik']<=$r['stokProduk']){
+                $queryUpdate=mysqli_query($conn,"UPDATE tbopname SET Status='1' WHERE idOpname='$idOpname'");
+                if($queryUpdate){
+                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk='".$r['jumlahFisik']."' WHERE idProduk='".$r['idProduk']."'");
+                    $_SESSION['terima']='true';
+                }else{
+                    $_SESSION['gagal']='true';
+                } 
+            }
+            else{
+                $_SESSION['over']='true';
             } 
+        }
+        if($_SESSION['gagal']!='true'){
+            $rowProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
+            LEFT JOIN tbdetailopname ON tbproduk.idProduk=tbdetailopname.idProduk
+            LEFT JOIN tbopname ON tbdetailopname.idOpname=tbopname.idOpname
+            WHERE tbopname.idOpname='$idOpname'");
+    
+            while($r2=mysqli_fetch_array($rowProduk)){
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokOpname,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalOpname']."','".$r2['Keterangan']."','".$r2['jumlahFisik']."','".$r2['stokProduk']."')");
+                $_SESSION['terima']='true';
+            }
+        }else{
+            $_SESSION['gagal']='true';
         }
     } 
 ?>
@@ -405,7 +432,7 @@
                                     ?>
                                     </select>
                                 </div>
-                                <?php if($Status === 'true'){?>
+                                <?php if($Status==0){?>
                                 <?php }else{?>
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#simpan">
                                         <i class="fas fa-save">Simpan</i>
@@ -432,7 +459,9 @@
                                                         <label for="exampleFormControlSelect1">Produk & Jumlah Sistem:</label>
                                                         <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
                                                             <?php
-                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan ORDER BY Produk ");
+                                                            // INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan  
+                                                                $query =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailopname.idProduk FROM tbdetailopname WHERE tbdetailopname.idOpname = '$fetchIdOpname') ORDER BY tbproduk.Produk ");         
+                                                                // $query =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailopname.idProduk FROM tbdetailopname WHERE tbdetailopname.idBarangOpname = '$fetchIdOpname') ORDER BY tbproduk.Produk");
                                                                 while ($data = mysqli_fetch_array($query)) {
                                                                 ?>
                                                                 <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - '.$data['stokProduk'].' '.$data['Satuan'].'';?></option>
@@ -473,9 +502,9 @@
                                             <tr  class="text-center">
                                                 <th>No.</th>
                                                 <th>Produk</th>
-                                                <th>Jumlah Opname</th>
                                                 <th>Jumlah Sistem</th>
-                                                <th>Selisih</th>
+                                                <th>Jumlah Opname</th>
+                                                <th>Pengurangan Stok</th>
                                                 <th>Alasan</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -497,19 +526,19 @@
                                                     $Satuan =$data['Satuan'];
                                                     $jumlahOpname =$data['jumlahFisik'];
                                                     $jumlahSistem =$data['jumlahSistem'];
-                                                    $Selisih =$jumlahOpname-$jumlahSistem;
+                                                    $Selisih=-($jumlahOpname-$jumlahSistem);
                                                     $Alasan =$data['Alasan'];
                                                     $Status=(int) $data['Status'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$inc++;?></td>
                                                 <td><?=$Produk;?></td>
-                                                <td class="text-center"><?=$jumlahOpname.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$jumlahSistem.' '.$Satuan;?></td>
+                                                <td class="text-center"><?=$jumlahOpname.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$Selisih;?></td>
                                                 <td><?=$Alasan;?></td>
                                                 <td class="text-center">
-                                                    <?php if($Status == '1'){?>
+                                                    <?php if($Status == 1){?>
                                                         <i class="fas fa-check">Disetujui</i>
                                                     <?php }else{?>
                                                         <button type="button" class="btn btn-warning btn-sm mb-4" data-toggle="modal" data-target="#ubah<?=$idDetailOpname;?>">
@@ -651,7 +680,7 @@
                                             </div>
                                         </tbody>
                                     </table>
-                                    <?php if($Status=='1'){?>
+                                    <?php if($Status==1){?>
                                     <?php } else{?>
                                             <?php 
                                                 $jabatan=$_SESSION['Jabatan']=='Owner';

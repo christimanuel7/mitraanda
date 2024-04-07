@@ -9,7 +9,7 @@
     if($_SESSION['Jabatan']=='Checker'){
         header('location:../../index.php');
     }
-		
+
     // Proses Menambah Barang Retur, Ketika Data Barang Retur Ditambah
     if(isset($_POST['tambahBarangRetur'])){
         $idDetailMasuk=$_POST['idDetailMasuk'];
@@ -27,16 +27,36 @@
         $idRetur="R".$idDetailMasuk;
         $Status="1";
 
-        // Jika masukan jumnlah retur lebih kecil sama dengan jumlah masuk
-        if($jumlahRetur<=$jumlahMasuk){
-            mysqli_query($conn, "INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
-            mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'$jumlahRetur' WHERE idProduk='$idProduk'");
-            $_SESSION['tambah']='true'; 
+        $rowRetur= mysqli_query($conn,"SELECT * FROM tbretur
+        INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
+        INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
+        WHERE idBarangRetur='$idRetur'");
+        while($r=mysqli_fetch_array($rowRetur)){
+            // Kueri mengubah data retur
+            if($r['jumlahRetur']<=$r['stokProduk']){
+                $queryUpdate=mysqli_query($conn,"UPDATE tbretur SET Status='1' WHERE idBarangRetur='$idRetur'");
+                if($queryUpdate){
+                    mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$jumlahRetur."' WHERE idProduk='".$r['idProduk']."'");
+                    $_SESSION['confirm']='true';
+                }else{
+                    $_SESSION['gagal']='true';
+                } 
+            }
+            else{
+                $_SESSION['gagal']='true';
+            } 
         }
-        // Jika masukan jumlah retur lebih besar dari jumlah masuk
-        else{
-            $_SESSION['gagal']='true';
-        } 
+
+        if($_SESSION['gagal']!='true'){
+            $rowProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
+            INNER JOIN tbretur ON tbproduk.idProduk=tbretur.idProduk
+            WHERE tbretur.idBarangRetur='$idRetur'");
+    
+            while($r2=mysqli_fetch_array($rowProduk)){
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokRetur,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalRetur']."','".$r2['Keterangan']."','".$r2['jumlahRetur']."','".$r2['stokProduk']."')");
+                $_SESSION['terima']='true';
+            }
+        }
     }
 ?>
 
