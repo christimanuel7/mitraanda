@@ -137,7 +137,8 @@
                 INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
                 WHERE tbstokmasuk.idBarangMasuk='$idBarangMasuk'");
         while($rowProduk=mysqli_fetch_array($queryProduk)){
-            mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokMasuk,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalMasuk']."','".$rowProduk['Pemasok']."','".$rowProduk['jumlahMasuk']."','".$rowProduk['stokProduk']."')");
+            $keteranganMasuk="Barang Masuk (".$rowProduk['Pemasok'].")";
+            mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokMasuk,totalStok) VALUES ('".$rowProduk['idProduk']."','".$rowProduk['tanggalMasuk']."','".$keteranganMasuk."','".$rowProduk['jumlahMasuk']."','".$rowProduk['stokProduk']."')");
             $_SESSION['terima']='true';
         }
     }

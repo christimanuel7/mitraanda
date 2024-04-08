@@ -139,7 +139,8 @@
             WHERE tbopname.idOpname='$idOpname'");
     
             while($r2=mysqli_fetch_array($rowProduk)){
-                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokOpname,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalOpname']."','".$r2['Keterangan']."','".$r2['jumlahFisik']."','".$r2['stokProduk']."')");
+                $Keterangan=$r2['Keterangan'].' ('.$r2['Alasan'].')';
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokOpname,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalOpname']."','".$Keterangan."','".$r2['jumlahFisik']."','".$r2['stokProduk']."')");
                 $_SESSION['terima']='true';
             }
         }else{

@@ -38,98 +38,38 @@
     $pdf->Cell(280,2,'',0,1);
 
     $pdf->SetFont('Times','B',9);
-    $pdf->Cell(20,14,'Tanggal',1,0,'C');
-    $pdf->Cell(50,14,'Dari/Untuk' ,1,0,'C');
-    $pdf->Cell(70,7,'Pembelian' ,1,0,'C');
-    $pdf->Cell(70,7,'Harga Pokok Penjualan' ,1,0,'C');
-    $pdf->Cell(70,7,'Persediaan' ,1,1,'C');
+    $pdf->Cell(30,14,'Tanggal',1,0,'C');
+    $pdf->Cell(120,14,'Keterangan' ,1,0,'C');
+    $pdf->Cell(80,7,'Jumlah Barang' ,1,0,'C');
+    $pdf->Cell(50,7,'Sisa Stok' ,1,1,'C');
 
-
-    $pdf->Cell(20,7,'',0,0);
+    $pdf->Cell(100,7,'',0,0);
     $pdf->Cell(50,7,'',0,0);
 
-    $pdf->Cell(10,7,'Unit',1,0,'C');
-    $pdf->Cell(30,7,'Harga',1,0,'C');
-    $pdf->Cell(30,7,'Jumlah',1,0,'C');
+    $pdf->Cell(40,7,'Masuk',1,0,'C');
+    $pdf->Cell(40,7,'Keluar',1,0,'C');
 
-    $pdf->Cell(10,7,'Unit',1,0,'C');
-    $pdf->Cell(30,7,'Unit',1,0,'C');
-    $pdf->Cell(30,7,'Jumlah',1,0,'C');
-
-    $pdf->Cell(10,7,'Unit',1,0,'C');
-    $pdf->Cell(30,7,'Unit',1,0,'C');
-    $pdf->Cell(30,7,'Jumlah',1,1,'C');
+    $pdf->Cell(50,7,'Jumlah',1,1,'C');
 
     $pdf->SetFont('Times','',10);
     $no=1;
-    $data=mysqli_query($conn,"SELECT tbstokmasuk.tanggalMasuk, tbpemasok.Pemasok, tbdetailmasuk.jumlahMasuk, tbdetailmasuk.totalHargaMasuk FROM tbdetailmasuk
-    INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
-    INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
-    WHERE tbdetailmasuk.idProduk='$idProduk'");
-    $data2=mysqli_query($conn,"SELECT tbstokkeluar.tanggalKeluar, tbstokkeluar.Keterangan, tbdetailkeluar.jumlahKeluar, tbdetailkeluar.totalHargaKeluar FROM tbdetailkeluar
-    INNER JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar
-    WHERE tbdetailkeluar.idProduk='$idProduk' AND tbstokkeluar.Status='1'
-    UNION
-    SELECT tbretur.tanggalRetur, tbretur.Alasan, tbretur.jumlahRetur, tbretur.totalHargaRetur FROM tbretur
-    WHERE tbretur.idProduk='$idProduk' AND tbretur.Status='1'");
-    $totalUnit=0;
-    $hargaUnit=0;
-    $totalHarga=0;
-    while($d=mysqli_fetch_array($data)){
-        $tanggalMasuk = $d['tanggalMasuk'];
-        $jumlahMasuk =$d['jumlahMasuk'];
-        $Pemasok=$d['Pemasok'];
-        $totalHargaMasuk =$d['totalHargaMasuk'];
-        $hargaMasukPerItem=$totalHargaMasuk/$jumlahMasuk;
-        $konversiHargaMasukPerItem= "Rp " . number_format($hargaMasukPerItem,2,',','.');
-        $konversiTotalHargaMasuk= "Rp " . number_format($totalHargaMasuk,2,',','.');
-        $totalUnit=$totalUnit+$jumlahMasuk;
-        $hargaUnit=$hargaMasukPerItem;
-        $totalHarga=$totalHarga+$totalHargaMasuk;
-        $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
-        $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
+    $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE idProduk='$idProduk'");
+    while($d=mysqli_fetch_array($tampilDetailProduk)){
+        $Tanggal = $d['Tanggal'];
+        $Keterangan =$d['Keterangan'];
+        $stokMasuk=$d['stokMasuk'];
+        $stokKeluar=$d['stokKeluar'];
+        $stokRetur=$d['stokRetur'];
+        $stokOpname=$d['stokOpname'];
+        $totalStok=$d['totalStok'];
 
-        $pdf->Cell(20,7,$d['tanggalMasuk'],1,0,'C');
-        $pdf->Cell(50,7,$d['Pemasok'],1,0,'L');
+        $pdf->Cell(30,7,$d['Tanggal'],1,0,'C');
+        $pdf->Cell(120,7,$d['Keterangan'],1,0,'L');
 
-        $pdf->Cell(10,7,$d['jumlahMasuk'],1,0,'C');
-        $pdf->Cell(30,7,$konversiHargaMasukPerItem,1,0,'C');
-        $pdf->Cell(30,7,$konversiTotalHargaMasuk,1,0,'C');
+        $pdf->Cell(40,7,$d['stokMasuk'],1,0,'C');
+        $pdf->Cell(40,7,$d['stokMasuk'],1,0,'C');
 
-        $pdf->Cell(10,7,'-',1,0,'C');
-        $pdf->Cell(30,7,'-',1,0,'C');
-        $pdf->Cell(30,7,'-',1,0,'C');
-
-        $pdf->Cell(10,7,$totalUnit,1,0,'C');
-        $pdf->Cell(30,7,$konversiHargaUnit,1,0,'C');
-        $pdf->Cell(30,7,$konversiTotalHarga,1,1,'C');
-    }
-    while($d=mysqli_fetch_array($data2)){
-        $jumlahKeluar=$d['jumlahKeluar'];
-        $totalHargaKeluar =$d['totalHargaKeluar'];
-        $hargaKeluarPerItem=$totalHargaKeluar/$jumlahKeluar;
-        $konversiHargaKeluarPerItem= "Rp " . number_format($hargaKeluarPerItem,2,',','.');
-        $konversiTotalHargaKeluar= "Rp " . number_format($totalHargaKeluar,2,',','.');
-        $totalUnit=$totalUnit-$jumlahKeluar;
-        $hargaUnit=$hargaKeluarPerItem;
-        $totalHarga=$totalHarga-$totalHargaKeluar;
-        $konversiHargaUnit= "Rp " . number_format($hargaUnit,2,',','.');
-        $konversiTotalHarga= "Rp " . number_format($totalHarga,2,',','.');
-
-        $pdf->Cell(20,7,$d['tanggalKeluar'],1,0,'C');
-        $pdf->Cell(50,7,$d['Keterangan'],1,0,'R');
-
-        $pdf->Cell(10,7,'-',1,0,'C');
-        $pdf->Cell(30,7,'-',1,0,'C');
-        $pdf->Cell(30,7,'-',1,0,'C');
-
-        $pdf->Cell(10,7,$d['jumlahKeluar'],1,0,'C');
-        $pdf->Cell(30,7,$konversiHargaKeluarPerItem,1,0,'C');
-        $pdf->Cell(30,7,$konversiTotalHargaKeluar,1,0,'C');
-
-        $pdf->Cell(10,7,$totalUnit,1,0,'C');
-        $pdf->Cell(30,7,$konversiHargaUnit,1,0,'C');
-        $pdf->Cell(30,7,$konversiTotalHarga,1,1,'C');
+        $pdf->Cell(50,7,$d['stokMasuk'],1,1,'C');
     }
     $pdf->Output();
 ?>

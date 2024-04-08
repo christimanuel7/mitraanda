@@ -1,9 +1,9 @@
 <?php
     require '../../fungsi.php';
 
-	if ($_SESSION['Jabatan'] == 'Checker') {
-        header('location:../../index.php');
-    }
+	if($_SESSION['Jabatan']=='Penjaga Toko'){
+		header('location:../../index.php');
+	}
 	
 	$idRetur = $_GET['id'];
 	

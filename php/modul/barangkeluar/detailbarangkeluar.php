@@ -144,9 +144,9 @@
             LEFT JOIN tbdetailkeluar ON tbproduk.idProduk=tbdetailkeluar.idProduk
             LEFT JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar 
             WHERE tbstokkeluar.idBarangKeluar='$idBarangKeluar'");
-    
             while($r2=mysqli_fetch_array($rowProduk)){
-                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokKeluar,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalKeluar']."','".$r2['Keterangan']."','".$r2['jumlahKeluar']."','".$r2['stokProduk']."')");
+                $keteranganKeluar="Barang Keluar (".$r2['Keterangan'].")";
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokKeluar,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalKeluar']."','".$keteranganKeluar."','".$r2['jumlahKeluar']."','".$r2['stokProduk']."')");
                 $_SESSION['terima']='true';
             }
         }else{

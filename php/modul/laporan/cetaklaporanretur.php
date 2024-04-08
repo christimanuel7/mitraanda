@@ -3,7 +3,7 @@
     require ('library/fpdf.php');
     include '../../fungsi.php';
 	
-	if($_SESSION['Jabatan']=='Checker'){
+	if($_SESSION['Jabatan']=='Penjaga Toko'){
 		header('location:../../index.php');
 	}
 

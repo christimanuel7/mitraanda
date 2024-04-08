@@ -6,9 +6,9 @@
     $_SESSION['gagal']='false';
 
     //Mengecek Jabatan yang Dapat Mengakses Halaman Retur
-    if($_SESSION['Jabatan']=='Checker'){
-        header('location:../../index.php');
-    }
+    if($_SESSION['Jabatan']=='Penjaga Toko'){
+		header('location:../../index.php');
+	}
 
     // Proses Menambah Barang Retur, Ketika Data Barang Retur Ditambah
     if(isset($_POST['tambahBarangRetur'])){
@@ -25,8 +25,44 @@
         $Format=$imageRetur['type'];
         $Blob=addslashes(file_get_contents($imageRetur["tmp_name"]));
         $idRetur="R".$idDetailMasuk;
-        $Status="1";
+        $Status="0";
 
+        if($jumlahRetur<=$jumlahMasuk){
+            mysqli_query($conn,"INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
+            $_SESSION['tambah']='true'; 
+        }else{
+            $_SESSION['gagal']='true';
+        } 
+        // $rowRetur= mysqli_query($conn,"SELECT * FROM tbretur
+        // INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
+        // INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
+        // WHERE idBarangRetur='$idRetur'");
+        // while($r=mysqli_fetch_array($rowRetur)){
+        //     // Kueri mengubah data retur
+        //     if($r['jumlahRetur']<=$r['stokProduk']){
+        //         mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
+        //         $_SESSION['confirm']='true';
+        //     }else{
+        //         $_SESSION['gagal']='true';
+        //     } 
+        // }
+
+        // if($_SESSION['gagal']!='true'){
+        //     $rowProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
+        //     INNER JOIN tbretur ON tbproduk.idProduk=tbretur.idProduk
+        //     WHERE tbretur.idBarangRetur='$idRetur'");
+    
+        //     while($r2=mysqli_fetch_array($rowProduk)){
+        //         $Alasan="Retur (".$r2['Alasan'].")";
+        //         mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokRetur,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalRetur']."','".$Alasan."','".$r2['jumlahRetur']."','".$r2['stokProduk']."')");
+        //         $_SESSION['terima']='true';
+        //     }
+        // }
+    }
+
+     // Proses Menambah Barang Retur, Ketika Data Barang Retur Ditambah
+     if(isset($_POST['confirmBarangRetur'])){
+        $idRetur= $_POST['idBarangRetur'];
         $rowRetur= mysqli_query($conn,"SELECT * FROM tbretur
         INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
         INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
@@ -34,7 +70,7 @@
         while($r=mysqli_fetch_array($rowRetur)){
             // Kueri mengubah data retur
             if($r['jumlahRetur']<=$r['stokProduk']){
-                mysqli_query($conn,"INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
+                mysqli_query($conn, "UPDATE tbretur SET Status='1' WHERE idBarangRetur='$idRetur'");
                 mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
                 $_SESSION['confirm']='true';
             }else{
@@ -48,10 +84,24 @@
             WHERE tbretur.idBarangRetur='$idRetur'");
     
             while($r2=mysqli_fetch_array($rowProduk)){
-                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokRetur,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalRetur']."','".$r2['Keterangan']."','".$r2['jumlahRetur']."','".$r2['stokProduk']."')");
+                $Alasan="Retur (".$r2['Alasan'].")";
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokRetur,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalRetur']."','".$Alasan."','".$r2['jumlahRetur']."','".$r2['stokProduk']."')");
                 $_SESSION['terima']='true';
             }
         }
+     }
+
+    // Metode untuk menghapus data barang retur
+    if(isset($_POST['hapusBarangRetur'])){
+        $idBarangRetur= $_POST['idBarangRetur'];
+        $hapusRetur = mysqli_query($conn, "DELETE FROM tbretur WHERE idBarangRetur='$idBarangRetur'");
+        
+        //Kueri menghapus data retur
+        if($hapusRetur){
+            $_SESSION['tolak']='true'; 
+        }else{
+            $_SESSION['gagal']='true';
+        } 
     }
 ?>
 
@@ -320,6 +370,7 @@
                                                             INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
                                                             INNER JOIN tbproduk ON tbdetailmasuk.idProduk=tbproduk.idProduk 
                                                             INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
+                                                            WHERE tbstokmasuk.Status='1'
                                                             ORDER BY idDetailMasuk DESC");
                                                             while ($data = mysqli_fetch_array($query)) {
                                                             ?>
@@ -402,9 +453,22 @@
                                                     <a href="downloadbuktiretur.php?id=<?php echo $idBarangRetur;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
                                                 </td>
                                                 <td class="text-center">
-                                                    <?php if($Status == '1'){?>
-                                                        <i class="fas fa-check">Disetujui</i>
+                                                    <?php if($Status == 1){?>
                                                     <?php }else{?>
+                                                    <?php 
+                                                        $jabatan=$_SESSION['Jabatan']=='Owner';
+                                                        $jabatan2=$_SESSION['Jabatan']=='Checker';
+                                                        if($jabatan OR $jabatan2){
+                                                        ?>
+                                                            <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#confirm<?=$idBarangRetur;?>">
+                                                                <i class="fas fa-check">Confirm</i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#hapus<?=$idBarangRetur;?>">
+                                                                <i class="fas fa-trash">Hapus</i>
+                                                            </button>
+                                                        <?php 
+                                                        }
+                                                        ?>
                                                     <?php }?>
                                                 </td>
                                             </tr>
@@ -413,6 +477,54 @@
                                             ?>
                                         </tbody>
                                     </table>
+
+                                    <!-- Modal Hapus -->
+                                    <div class="modal fade" id="hapus<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <form method="POST">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menghapus data barang retur tersebut?</h5>
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-danger" name="hapusBarangRetur">Hapus</button>
+                                                        </div>
+                                                    </div>
+                                            </form>   
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Confirm -->
+                                    <div class="modal fade" id="confirm<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <form method="POST">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk confirm data barang retur tersebut?</h5>
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-success" name="confirmBarangRetur">Confirm</button>
+                                                        </div>
+                                                    </div>
+                                            </form>   
+                                        </div>
+                                    </div>
                                 </div>
                             </div>   
                             <!-- Akhiran Datatables -->
