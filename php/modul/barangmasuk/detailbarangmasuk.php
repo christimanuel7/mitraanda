@@ -386,6 +386,10 @@
                                 echo '<div class="alert alert-success" role="alert">
                                     Data barang masuk berhasil diterima.
                                 </div>';
+                            }else if($_SESSION['tolak']=='true'){
+                                echo '<div class="alert alert-danger" role="alert">
+                                    Data barang masuk ditolak.
+                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
                                     Data barang tidak terkoneksi.
@@ -711,7 +715,7 @@
 											<!-- Modal Terima -->	
                                         </tbody>
                                     </table>
-                                    <?php if($Status == 1){?>
+                                    <?php if($Status == 0){?>
                                         <?php 
                                             $jabatan=$_SESSION['Jabatan']=='Owner';
                                             if($jabatan){

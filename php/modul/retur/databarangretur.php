@@ -3,6 +3,8 @@
     require '../../ceklogin.php';
 
     $_SESSION['tambah']='false';
+    $_SESSION['hapus']='false';
+    $_SESSION['over']='false';
     $_SESSION['gagal']='false';
 
     //Mengecek Jabatan yang Dapat Mengakses Halaman Retur
@@ -31,7 +33,7 @@
             mysqli_query($conn,"INSERT INTO tbretur (idBarangRetur,idDetailMasuk,tanggalRetur,idProduk,jumlahRetur,Alasan,Bukti,Format,Status) VALUES ('$idRetur','$idDetailMasuk','$tglRetur','$idProduk','$jumlahRetur','$Alasan','$Blob','$Format','$Status')");
             $_SESSION['tambah']='true'; 
         }else{
-            $_SESSION['gagal']='true';
+            $_SESSION['over']='true';
         } 
     }
 
@@ -49,7 +51,7 @@
                 mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
                 $_SESSION['confirm']='true';
             }else{
-                $_SESSION['gagal']='true';
+                $_SESSION['over']='true';
             } 
         }
 
@@ -73,7 +75,7 @@
         
         //Kueri menghapus data retur
         if($hapusRetur){
-            $_SESSION['tolak']='true'; 
+            $_SESSION['hapus']='true'; 
         }else{
             $_SESSION['gagal']='true';
         } 
@@ -313,6 +315,14 @@
                                 echo '<div class="alert alert-primary" role="alert">
                                     Data barang retur berhasil ditambah.
                                 </div>';
+                            }else if($_SESSION['hapus']=='true'){
+                                echo '<div class="alert alert-danger" role="alert">
+                                    Data barang retur berhasil dihapus.
+                                </div>';
+                            }else if($_SESSION['over']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Jumlah masukan produk yang diretur melebihi stok produk.
+                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
                                     Data barang retur tidak terkoneksi.
@@ -345,11 +355,12 @@
                                                             INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
                                                             INNER JOIN tbproduk ON tbdetailmasuk.idProduk=tbproduk.idProduk 
                                                             INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
+                                                            INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
                                                             WHERE tbstokmasuk.Status='1'
                                                             ORDER BY idDetailMasuk DESC");
                                                             while ($data = mysqli_fetch_array($query)) {
                                                             ?>
-                                                            <option value="<?=$data['idDetailMasuk'];?>"><?php echo $data['tanggalMasuk'].' : '.$data['Produk'].' : '.$data['jumlahMasuk'].' '.$data['Satuan'];?></option>
+                                                            <option value="<?=$data['idDetailMasuk'];?>"><?php echo $data['tanggalMasuk'].' : '.$data['Produk'].' : '.$data['jumlahMasuk'].' '.$data['Satuan'].' - '.$data['Pemasok'];?></option>
                                                             <?php
                                                             }
                                                         ?>

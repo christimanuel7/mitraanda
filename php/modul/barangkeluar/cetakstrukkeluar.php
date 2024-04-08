@@ -6,7 +6,19 @@
     if($_SESSION['Jabatan']=='Checker'){
 		header('location:../../index.php');
 	}
-            
+
+    $idBarangKeluar = $_GET['id'];
+    $data = mysqli_query($conn,"SELECT * FROM `tbdetailkeluar` 
+    INNER JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar 
+    INNER JOIN tbproduk ON tbdetailkeluar.idProduk=tbproduk.idProduk
+    INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
+    WHERE tbstokkeluar.idBarangKeluar='$idBarangKeluar' AND tbstokkeluar.Status=1
+    ORDER BY tbdetailkeluar.idDetailKeluar");
+    $rowBarangKeluar =mysqli_fetch_array($data);
+
+	$tanggalKeluar = $rowBarangKeluar['tanggalKeluar'];
+    $Keterangan = $rowBarangKeluar['Keterangan'];
+         
     // Mengatur Halaman PDF
     $pdf = new FPDF('P','cm',[18,12]);
     $pdf->AddPage('P');
@@ -26,22 +38,10 @@
     $pdf->Cell(10,1,'Jl. Limo Raya No.112, Limo, Kec. Limo, Kota Depok, Jawa Barat 16514',0,1,'C');
     $pdf->Line(0, 4, 600, 4);
     $pdf->Cell(0, 0.5,'',0,1); 
-
-
-    // $pdf->Cell(280,12,'No. Telp: 081365498675',0,1,'C');
-    // $pdf->Cell(280,8,'',0,1);
-    // $pdf->SetFont('Times','',20);
-    // $pdf->Cell(280,10,'DAFTAR LAPORAN STOK BARANG MASUK',0,1,'C');
-    // $pdf->Cell(280,4,'',0,1);
-    // $pdf->SetFont('Times','',16);
-    // if(!empty($awal) OR !empty($akhir)){
-    //     // $pdf->Cell(280,4,'Periode: '.$tglAwal.' - '.$tglAkhir,0,1,'C');
-    // }else{
-    //     $pdf->Cell(280,4,'',0,1,'C');
-    // }
-
-    // edric
     $pdf->SetFont('times','B',9);
+    $pdf->Cell(10,0,'Tanggal: '.$tanggalKeluar,0,1,'L');
+    $pdf->Cell(10,1,'Kepada Yth.:'.$Keterangan,0,1,'L');
+
     // Menghitung lebar halaman pdf
     $pageWidth = $pdf->GetPageWidth();
     // Menyesuaikan lebar sel dengan lebar halaman PDF
@@ -55,8 +55,8 @@
     $pdf->Cell($cellWidth2, 1, 'Nama Barang', 1, 0, 'C');
     $pdf->Cell($cellWidth3, 1, 'Harga', 1, 0, 'C');
     $pdf->Cell($cellWidth4, 1, 'Jumlah', 1, 1, 'C'); // Mengakhiri baris
-    // end edric
 
+    $pdf->SetFont('times','',8);
     $idBarangKeluar = $_GET['id'];
     $data = mysqli_query($conn,"SELECT * FROM `tbdetailkeluar` 
     INNER JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar 

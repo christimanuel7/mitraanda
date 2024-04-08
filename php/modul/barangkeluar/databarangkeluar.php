@@ -4,7 +4,6 @@
 		
     $_SESSION['tambah']='false';
     $_SESSION['confirm']='false';
-    $_SESSION['cancel']='false';
     $_SESSION['gagal']='false';
 
     //Proses Mengecek Jabatan yang Dapat Mengakses Halaman Satuan
