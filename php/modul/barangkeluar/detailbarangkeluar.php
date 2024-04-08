@@ -434,7 +434,7 @@
                                     </div>
                                     <?php }?>
                                     <?php if($Status == 1){?>
-                                        <button type="submit" class="btn btn-success" name="cetakBonKeluar">
+                                        <button type="button" class="btn btn-success" name="cetakBonKeluar">
                                             <i class="fa fa-print">Cetak Bon</i>
                                         </button>
                                     <?php }else{?>

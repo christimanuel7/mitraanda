@@ -413,6 +413,8 @@
                                                 <td class="text-left"><?=$data['Keterangan'];?></td>
                                                 <td class="text-center"><?=$data['stokMasuk'];?></td>
                                                 <td class="text-center"><?=$data['stokKeluar'];?></td>
+                                                <td class="text-center"><?=$data['stokRetur'];?></td>
+                                                <td class="text-center"><?=$data['stokOpname'];?></td>
                                                 <td class="text-center"><?=$data['totalStok'];?></td>
                                             </tr>
                                         <?php }?>

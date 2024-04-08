@@ -454,16 +454,17 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <?php if($Status == 1){?>
+                                                        <i class="fas fa-check">Disetujui</i>
                                                     <?php }else{?>
                                                     <?php 
                                                         $jabatan=$_SESSION['Jabatan']=='Owner';
                                                         $jabatan2=$_SESSION['Jabatan']=='Checker';
                                                         if($jabatan OR $jabatan2){
                                                         ?>
-                                                            <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#confirm<?=$idBarangRetur;?>">
+                                                            <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#confirm-<?=$idBarangRetur;?>">
                                                                 <i class="fas fa-check">Confirm</i>
                                                             </button>
-                                                            <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#hapus<?=$idBarangRetur;?>">
+                                                            <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#hapus-<?=$idBarangRetur;?>">
                                                                 <i class="fas fa-trash">Hapus</i>
                                                             </button>
                                                         <?php 
@@ -472,59 +473,59 @@
                                                     <?php }?>
                                                 </td>
                                             </tr>
+
+                                            <!-- Modal Hapus -->
+                                            <div class="modal fade" id="hapus-<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <form method="POST">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menghapus data barang retur tersebut?</h5>
+                                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-danger" name="hapusBarangRetur">Hapus</button>
+                                                                </div>
+                                                            </div>
+                                                    </form>   
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal Confirm -->
+                                            <div class="modal fade" id="confirm-<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <form method="POST">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk confirm data barang retur tersebut?</h5>
+                                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                                    <button type="submit" class="btn btn-success" name="confirmBarangRetur">Confirm</button>
+                                                                </div>
+                                                            </div>
+                                                    </form>   
+                                                </div>
+                                            </div>
                                             <?php
                                                 };
                                             ?>
                                         </tbody>
                                     </table>
-
-                                    <!-- Modal Hapus -->
-                                    <div class="modal fade" id="hapus<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <form method="POST">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk menghapus data barang retur tersebut?</h5>
-                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-danger" name="hapusBarangRetur">Hapus</button>
-                                                        </div>
-                                                    </div>
-                                            </form>   
-                                        </div>
-                                    </div>
-
-                                    <!-- Modal Confirm -->
-                                    <div class="modal fade" id="confirm<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <form method="POST">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk confirm data barang retur tersebut?</h5>
-                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <?php echo $idBarangRetur.' - '.$Produk.' ('.$jumlahRetur.' '.$Satuan.' )';?>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <input type="hidden" name="idBarangRetur" value="<?=$idBarangRetur;?>">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                            <button type="submit" class="btn btn-success" name="confirmBarangRetur">Confirm</button>
-                                                        </div>
-                                                    </div>
-                                            </form>   
-                                        </div>
-                                    </div>
                                 </div>
                             </div>   
                             <!-- Akhiran Datatables -->

@@ -27,16 +27,15 @@
 
     $pdf->SetFont('Times','B',9);
     $pdf->Cell(40,7,'ID Produk',1,0,'C');
-    $pdf->Cell(80,7,'Nama Produk' ,1,0,'C');
+    $pdf->Cell(120,7,'Nama Produk' ,1,0,'C');
     $pdf->Cell(30,7,'Satuan' ,1,0,'C');
-    $pdf->Cell(40,7,'Harga Beli' ,1,0,'C');
     $pdf->Cell(40,7,'Harga Jual' ,1,0,'C');
     $pdf->Cell(50,7,'Stok Produk' ,1,1,'C');
     
     $pdf->SetFont('Times','',10);
     $no=1;
     $data=mysqli_query($conn,"
-    SELECT idProduk, Satuan, Produk, hargaBeli, hargaJual, stokProduk FROM tbproduk
+    SELECT idProduk, Satuan, Produk, hargaJual, stokProduk FROM tbproduk
     INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
     WHERE tbproduk.Status = '1'
     ORDER BY idProduk");
@@ -49,12 +48,10 @@
     $totalHabis = mysqli_num_rows($dataHabis);
     $totalStok=0;
     while($d = mysqli_fetch_array($data)){
-        $konversiHargaBeli="Rp " . number_format($d['hargaBeli'],2,',','.');
         $konversiHargaJual="Rp " . number_format($d['hargaJual'],2,',','.');
         $pdf->Cell(40,6, $d['idProduk'],1,0,'C');
-        $pdf->Cell(80,6, $d['Produk'],1,0,'L');
+        $pdf->Cell(120,6, $d['Produk'],1,0,'L');
         $pdf->Cell(30,6, $d['Satuan'],1,0,'C');
-        $pdf->Cell(40,6, $konversiHargaBeli,1,0,'C');
         $pdf->Cell(40,6, $konversiHargaJual,1,0,'C');
         $pdf->Cell(50,6, $d['stokProduk'],1,1,'C');
         $totalStok=$totalStok+$d['stokProduk'];
