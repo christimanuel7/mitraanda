@@ -33,31 +33,6 @@
         }else{
             $_SESSION['gagal']='true';
         } 
-        // $rowRetur= mysqli_query($conn,"SELECT * FROM tbretur
-        // INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
-        // INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
-        // WHERE idBarangRetur='$idRetur'");
-        // while($r=mysqli_fetch_array($rowRetur)){
-        //     // Kueri mengubah data retur
-        //     if($r['jumlahRetur']<=$r['stokProduk']){
-        //         mysqli_query($conn,"UPDATE tbproduk SET stokProduk=stokProduk-'".$r['jumlahRetur']."' WHERE idProduk='".$r['idProduk']."'");
-        //         $_SESSION['confirm']='true';
-        //     }else{
-        //         $_SESSION['gagal']='true';
-        //     } 
-        // }
-
-        // if($_SESSION['gagal']!='true'){
-        //     $rowProduk=mysqli_query($conn, "SELECT * FROM tbproduk 
-        //     INNER JOIN tbretur ON tbproduk.idProduk=tbretur.idProduk
-        //     WHERE tbretur.idBarangRetur='$idRetur'");
-    
-        //     while($r2=mysqli_fetch_array($rowProduk)){
-        //         $Alasan="Retur (".$r2['Alasan'].")";
-        //         mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokRetur,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalRetur']."','".$Alasan."','".$r2['jumlahRetur']."','".$r2['stokProduk']."')");
-        //         $_SESSION['terima']='true';
-        //     }
-        // }
     }
 
      // Proses Menambah Barang Retur, Ketika Data Barang Retur Ditambah

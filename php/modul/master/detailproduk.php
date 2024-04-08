@@ -411,11 +411,15 @@
                                             <tr>
                                                 <td class="text-center"><?=$data['Tanggal'];?></td>
                                                 <td class="text-left"><?=$data['Keterangan'];?></td>
-                                                <td class="text-center"><?=$data['stokMasuk'];?></td>
-                                                <td class="text-center"><?=$data['stokKeluar'];?></td>
-                                                <td class="text-center"><?=$data['stokRetur'];?></td>
-                                                <td class="text-center"><?=$data['stokOpname'];?></td>
-                                                <td class="text-center"><?=$data['totalStok'];?></td>
+                                                <td class="text-center">
+                                                    <?php if($data['stokMasuk']!=0){ echo $data['stokMasuk'];} else { echo'-';} ?>
+                                                </td> 
+                                                <td class="text-center">
+                                                    <?php if($data['stokKeluar'!=0]){ echo $data['stokKeluar'];} else { echo'-';} ?>
+                                                    <?php if($data['stokRetur'!=0]){ echo $data['stokRetur'];} else { echo'-';} ?>
+                                                    <?php if($data['stokOpname'!=0]){ echo $data['stokOpname'];} else { echo'-';} ?>
+                                                </td> 
+                                                <td class="text-center"><?=$data['totalStok'];?></td>   
                                             </tr>
                                         <?php }?>
                                     </tbody>  

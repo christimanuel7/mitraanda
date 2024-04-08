@@ -53,23 +53,33 @@
 
     $pdf->SetFont('Times','',10);
     $no=1;
+
+    // Data Tabel
     $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE idProduk='$idProduk'");
     while($d=mysqli_fetch_array($tampilDetailProduk)){
-        $Tanggal = $d['Tanggal'];
-        $Keterangan =$d['Keterangan'];
-        $stokMasuk=$d['stokMasuk'];
-        $stokKeluar=$d['stokKeluar'];
-        $stokRetur=$d['stokRetur'];
-        $stokOpname=$d['stokOpname'];
-        $totalStok=$d['totalStok'];
-
+      
         $pdf->Cell(30,7,$d['Tanggal'],1,0,'C');
         $pdf->Cell(120,7,$d['Keterangan'],1,0,'L');
+        
+        if($d['stokMasuk']!=0){
+            $pdf->Cell(40,7,$d['stokMasuk'],1,0,'C');
+        }else{
+            $pdf->Cell(40,7,'-',1,0,'C');
+        }
 
-        $pdf->Cell(40,7,$d['stokMasuk'],1,0,'C');
-        $pdf->Cell(40,7,$d['stokMasuk'],1,0,'C');
-
-        $pdf->Cell(50,7,$d['stokMasuk'],1,1,'C');
+        $stokkeluarreturopname='-';
+        if($d['stokKeluar']!=0){
+            $stokkeluarreturopname=$d['stokKeluar'];
     }
+    if($d['stokRetur']!=0){
+        $stokkeluarreturopname=$d['stokRetur'];
+    }
+    if($d['stokOpname']!=0){
+        $stokkeluarreturopname=$d['stokOpname'];
+    }
+    $pdf->Cell(40, 7, $stokkeluarreturopname, 1, 0, 'C');
+
+    $pdf->Cell(50, 7, $d['totalStok'], 1, 1, 'C');
+}
     $pdf->Output();
 ?>

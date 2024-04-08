@@ -434,9 +434,7 @@
                                     </div>
                                     <?php }?>
                                     <?php if($Status == 1){?>
-                                        <button type="button" class="btn btn-success" name="cetakBonKeluar">
-                                            <i class="fa fa-print">Cetak Bon</i>
-                                        </button>
+                                        <a href="cetakstrukkeluar.php?id=<?php echo $idBarangKeluar;?>" target="_blank" class="btn btn-primary" role="button"><i class="fas fa-fw fa-download" style="color: #000000;width:100px;color:white;">Cetak bon</i></a>
                                     <?php }else{?>
                                         <button type="submit" class="btn btn-success" name="simpanDataKeluar">
                                             <i class="fa fa-save">Simpan</i>
@@ -502,7 +500,7 @@
                                             <tr>
                                                 <th class="text-center">No.</th>
                                                 <th class="text-center">Nama Produk</th>
-                                                <th class="text-center">Harga per Item</th>
+                                                <th class="text-center">Harga Item</th>
                                                 <th class="text-center">Jumlah</th>
                                                 <th class="text-center">Total</th>
                                                 <?php if($Status==0){?>

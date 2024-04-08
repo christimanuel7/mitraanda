@@ -535,7 +535,7 @@
                                             <tr>
                                                 <th class="text-center">No.</th>
                                                 <th class="text-center">Nama Produk</th>
-                                                <th class="text-center">Harga per Item</th>
+                                                <th class="text-center">Harga Item</th>
                                                 <th class="text-center">Jumlah</th>
                                                 <th class="text-center">Total</th>
                                                 <th class="text-center">Aksi</th>
