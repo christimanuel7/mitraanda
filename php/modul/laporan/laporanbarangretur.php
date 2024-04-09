@@ -121,6 +121,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
+                            <?php 
+								}
+							?>
+                             <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
 							<?php 
 								}
@@ -257,13 +265,13 @@
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label for="">Tanggal Awal:</label>
-                                                        <input type="date" class="form-control" id="tgAwal" name="tgAwal" value="<?php echo $tgAwal;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')" required>
+                                                        <input type="date" class="form-control" id="tgAwal" name="tgAwal" value="<?php echo $tgAwal;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')"  max="<?= date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label for="">Tanggal Akhir:</label>
-                                                        <input type="date" class="form-control" id="tgAkhir" name="tgAkhir" value="<?php echo $tgAkhir;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')" required>
+                                                        <input type="date" class="form-control" id="tgAkhir" name="tgAkhir" value="<?php echo $tgAkhir;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')"  max="<?= date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
                                             </div>

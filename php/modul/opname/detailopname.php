@@ -17,7 +17,7 @@
 
     // Mengambil data idOpname
 	$fetchIdOpname = $_GET['id'];
-    $query=mysqli_query($conn,"SELECT * FROM tbopname
+    $query=mysqli_query($conn,"SELECT *,tbopname.Status AS Stat FROM tbopname
     INNER JOIN tbpengguna ON tbopname.idPengguna=tbpengguna.idPengguna
     WHERE idOpname='$fetchIdOpname';");
 	$rowBarangOpname = mysqli_fetch_array($query);
@@ -27,7 +27,24 @@
     $Keterangan=$rowBarangOpname['Keterangan'];
     $idPengguna=$rowBarangOpname['idPengguna'];
     $Pemeriksa=$rowBarangOpname['Nama'];
-    $Status=(int) $rowBarangOpname['Status'];
+    $Status=(int) $rowBarangOpname['Stat'];
+
+    // Proses Menyimpan Perubahan Informasi Data Barang Masuk
+    if(isset($_POST['simpanDataOpname'])){
+        $idBarangMasuk = $_POST['idOpname'];
+        $tanggalOpname = $_POST['tanggalOpname'];
+        $Keterangan=$_POST['Keterangan'];
+        $idPengguna=$_POST['idPengguna'];
+
+        $simpanDataMasuk = mysqli_query($conn,"UPDATE tbopname SET tanggalOpname ='$tanggalOpname ',Keterangan='$Keterangan',idPengguna='$idPengguna' WHERE idOpname='$idOpname'");
+        
+        // Kueri mengubah data detail barang masuk
+        if($simpanDataMasuk){
+            $_SESSION['ubah']='true'; 
+        }else{
+            $_SESSION['gagal']='true';   
+        } 
+    }
 
     // 
     if(isset($_POST['tambahDetailOpname'])){
@@ -140,7 +157,10 @@
     
             while($r2=mysqli_fetch_array($rowProduk)){
                 $Keterangan=$r2['Keterangan'].' ('.$r2['Alasan'].')';
-                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokOpname,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalOpname']."','".$Keterangan."','".$r2['jumlahFisik']."','".$r2['stokProduk']."')");
+                $jumlahSistem=$r2['jumlahSistem'];
+                $jumlahFisik=$r2['jumlahFisik'];
+                $Selisih=$jumlahSistem-$jumlahFisik;
+                mysqli_query($conn,"INSERT INTO tblog (idProduk,Tanggal,Keterangan,stokOpname,totalStok) VALUES ('".$r2['idProduk']."','".$r2['tanggalOpname']."','".$Keterangan."','".$Selisih."','".$r2['stokProduk']."')");
                 $_SESSION['terima']='true';
             }
         }else{
@@ -251,6 +271,14 @@
 								if($jabatan OR $jabatan2){
 							?> 
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a> 
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
                             <?php 
 								}
@@ -320,7 +348,6 @@
                                 if($jabatan OR $jabatan2){
                             ?> 
                             <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
                             <?php 
 								}
 							?>
@@ -329,6 +356,7 @@
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?> 
+                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
 							<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
 							<?php 
 								}
@@ -406,36 +434,65 @@
                                     <label for="recipient-name" class="col-form-label">ID Opname:</label>
                                     <input type="text" class="form-control" id="idOpname" name="idOpname" value="<?php echo $idOpname;?>" readonly>
                                 </div>
-                                <div class="form-group">
-                                    <label for="message-text" class="col-form-label">Tanggal Opname:</label>
-                                    <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="message-text" class="col-form-label">Keterangan:</label>
-                                    <input type="text" class="form-control" value="<?php echo $Keterangan;?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Pemeriksa:</label>
-                                    <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna">
-                                    <?php
-                                        $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
-                                        WHERE idPengguna='$idPengguna'");
-                                        $dataSelect=mysqli_fetch_array($querySelect);
-                                    ?>
-                                    <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
-                                    <?php
-                                        $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
-                                        while ($data = mysqli_fetch_array($query)) {
-                                        ?>
-                                        <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
-                                        <?php
-                                        }
-                                    ?>
-                                    </select>
-                                </div>
                                 <?php if($Status==0){?>
-                                <?php }else{?>
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#simpan">
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Tanggal Opname:</label>
+                                        <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Keterangan:</label>
+                                        <input type="text" class="form-control" value="<?php echo $Keterangan;?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Pemeriksa:</label>
+                                        <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna">
+                                        <?php
+                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
+                                            WHERE idPengguna='$idPengguna'");
+                                            $dataSelect=mysqli_fetch_array($querySelect);
+                                        ?>
+                                        <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
+                                        <?php
+                                            $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
+                                            while ($data = mysqli_fetch_array($query)) {
+                                            ?>
+                                            <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
+                                            <?php
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                <?php } else{?>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Tanggal Opname:</label>
+                                        <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Keterangan:</label>
+                                        <input type="text" class="form-control" value="<?php echo $Keterangan;?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Pemeriksa:</label>
+                                        <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna" readonly>
+                                        <?php
+                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
+                                            WHERE idPengguna='$idPengguna'");
+                                            $dataSelect=mysqli_fetch_array($querySelect);
+                                        ?>
+                                        <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
+                                        <?php
+                                            $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
+                                            while ($data = mysqli_fetch_array($query)) {
+                                            ?>
+                                            <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
+                                            <?php
+                                            }
+                                        ?>
+                                        </select>
+                                    </div>
+                                <?php }?>
+                                <?php if($Status==0){?>
+                                    <button type="submit" class="btn btn-success" name="simpanDataKeluar">
                                         <i class="fas fa-save">Simpan</i>
                                     </button>
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
@@ -513,7 +570,7 @@
                                         <tbody>
                                             <?php
                                                 $tampilDetailOpname= mysqli_query($conn,"
-                                                SELECT *,tbopname.Status FROM tbdetailopname
+                                                SELECT *,tbopname.Status AS Stat FROM tbdetailopname
                                                 INNER JOIN tbopname ON tbdetailopname.idOpname=tbopname.idOpname
                                                 INNER JOIN tbproduk ON tbdetailopname.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
@@ -529,7 +586,7 @@
                                                     $jumlahSistem =$data['jumlahSistem'];
                                                     $Selisih=-($jumlahOpname-$jumlahSistem);
                                                     $Alasan =$data['Alasan'];
-                                                    $Status=(int) $data['Status'];
+                                                    $Status=(int) $data['Stat'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$inc++;?></td>

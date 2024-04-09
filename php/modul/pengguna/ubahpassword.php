@@ -135,7 +135,7 @@
                             ?>
                             <?php 
                                 $jabatan=$_SESSION['Jabatan']=='Owner';
-                                $jabatan2=$_SESSION['Jabatan']=='Penjaga Toko';
+                                $jabatan2=$_SESSION['Jabatan']=='Checker';
                                 if($jabatan OR $jabatan2){
                             ?>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>

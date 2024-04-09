@@ -183,6 +183,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
                             <a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
 							<?php 
 								}
@@ -251,14 +259,14 @@
 								if($jabatan OR $jabatan2){
 							?>
 							<a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-							<a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
                             <?php 
-							}?> 
+							}?>
                             <?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?>
+							<a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
 							<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
                             <?php 
 							}?> 
@@ -413,7 +421,7 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                                $tampilDataRetur= mysqli_query($conn,"SELECT *,tbretur.Status FROM tbretur 
+                                                $tampilDataRetur= mysqli_query($conn,"SELECT *,tbretur.Status AS Stat FROM tbretur 
                                                 INNER JOIN tbdetailmasuk ON tbretur.idDetailMasuk=tbdetailmasuk.idDetailMasuk
                                                 INNER JOIN tbproduk ON tbretur.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
@@ -427,7 +435,7 @@
                                                     $Satuan=$data['Satuan'];
                                                     $Alasan =$data['Alasan'];
                                                     $Format =$data['Format'];
-                                                    $Status =(int) $data['Status'];
+                                                    $Status =(int) $data['Stat'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$idBarangRetur;?></td>
@@ -438,30 +446,22 @@
                                                 <td class="text-center">
                                                     <a href="downloadbuktiretur.php?id=<?php echo $idBarangRetur;?>" target="_blank"><i class="fas fa-fw fa-download" style="color: #000000;"></i></a>
                                                 </td>
+                                                <?php if($Status == 0){?>
                                                 <td class="text-center">
-                                                    <?php if($Status == 1){?>
-                                                        <i class="fas fa-check">Disetujui</i>
-                                                    <?php }else{?>
-                                                    <?php 
-                                                        $jabatan=$_SESSION['Jabatan']=='Owner';
-                                                        $jabatan2=$_SESSION['Jabatan']=='Checker';
-                                                        if($jabatan OR $jabatan2){
-                                                        ?>
-                                                            <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#confirm-<?=$idBarangRetur;?>">
-                                                                <i class="fas fa-check">Confirm</i>
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#hapus-<?=$idBarangRetur;?>">
-                                                                <i class="fas fa-trash">Hapus</i>
-                                                            </button>
-                                                        <?php 
-                                                        }
-                                                        ?>
-                                                    <?php }?>
+                                                    <button type="button" class="btn btn-success btn-sm mb-4" data-toggle="modal" data-target="#confirm-<?=$idBarangRetur;?>">
+                                                        <i class="fas fa-check">Confirm</i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-sm mb-4" data-toggle="modal" data-target="#delete-<?=$idBarangRetur;?>">
+                                                        <i class="fas fa-times">Delete</i>
+                                                    </button>
                                                 </td>
+                                                <?php } else{?> 
+                                                    <td class="text-center"></td>
+                                                <?php }?> 
                                             </tr>
 
                                             <!-- Modal Hapus -->
-                                            <div class="modal fade" id="hapus-<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal fade" id="delete-<?=$idBarangRetur;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <form method="POST">
                                                             <div class="modal-content">

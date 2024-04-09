@@ -47,9 +47,7 @@
     $pdf->Cell(50,7,'',0,0);
 
     $pdf->Cell(40,7,'Masuk',1,0,'C');
-    $pdf->Cell(40,7,'Keluar',1,0,'C');
-
-    $pdf->Cell(50,7,'Jumlah',1,1,'C');
+    $pdf->Cell(40,7,'Keluar',1,1,'C');
 
     $pdf->SetFont('Times','',10);
     $no=1;

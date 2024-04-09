@@ -407,6 +407,7 @@
                                             $tampilDetailProduk=mysqli_query($conn,"SELECT * FROM tblog WHERE idProduk='$idProduk'");
                                             $inc=1;
                                             while($data=mysqli_fetch_array($tampilDetailProduk)){
+                                                $Selisih=$data['totalStok']-$data['stokOpname'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$data['Tanggal'];?></td>

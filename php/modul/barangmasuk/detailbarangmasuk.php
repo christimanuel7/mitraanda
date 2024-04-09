@@ -15,7 +15,7 @@
 
     // Mengambil data idBarangMasuk
 	$fetchIdBarangMasuk = $_GET['id'];
-    $query=mysqli_query($conn, "SELECT * FROM tbstokmasuk 
+    $query=mysqli_query($conn, "SELECT *,tbstokmasuk.Status AS Stat FROM tbstokmasuk 
     INNER JOIN tbpemasok ON tbstokmasuk.idPemasok=tbpemasok.idPemasok
     INNER JOIN tbpengguna ON tbstokmasuk.idPengguna=tbpengguna.idPengguna 
     WHERE idBarangMasuk='$fetchIdBarangMasuk'");
@@ -27,7 +27,7 @@
     $idPengguna=$rowBarangMasuk['idPengguna'];
     $idPemasok=$rowBarangMasuk['idPemasok'];
 	$Penerima=$rowBarangMasuk['Nama'];
-	$Status = (int) $rowBarangMasuk['Status'];
+	$Status = (int) $rowBarangMasuk['Stat'];
         
     // Proses Menyimpan Perubahan Informasi Data Barang Masuk
     if(isset($_POST['simpanDataMasuk'])){
@@ -246,6 +246,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="../barangkeluar/databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
                             <?php 
 								}
@@ -314,14 +322,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
                             <?php 
 							}?>
-							<?php 
+                            <?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?> 
+                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
 							<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
 							<?php 
 							}?> 
@@ -472,14 +480,13 @@
                                         </select>
                                     </div>
                                     <?php }?>
-                                    <?php if($Status == 1){?>
+                                    <?php if($Status == 0){?>
                                         <button type="submit" class="btn btn-success" name="simpanDataMasuk">
                                             <i class="fa fa-save">Simpan</i>
                                         </button>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
                                             <i class="fa fa-plus">Tambah</i>
                                         </button>
-                                    <?php }else{?>
                                     <?php }?>
                                 </form>
                             </div>
@@ -548,7 +555,7 @@
                                         <tbody>
                                             <?php
                                                 $tampilDetilProdukMasuk= mysqli_query($conn,"
-                                                SELECT *,tbstokmasuk.Status FROM tbdetailmasuk
+                                                SELECT *,tbstokmasuk.Status AS Stat FROM tbdetailmasuk
                                                 INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
                                                 INNER JOIN tbproduk ON tbdetailmasuk.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbsatuan.idSatuan=tbproduk.idSatuan
@@ -565,7 +572,7 @@
                                                     $jumlahMasuk =$data['jumlahMasuk'];
                                                     $totalHargaMasuk=$hargaMasuk*$jumlahMasuk;
                                                     $konversiTotalHargaMasuk = "Rp " . number_format($totalHargaMasuk,2,',','.');
-                                                    $Status=$data['Status'];
+                                                    $Status=$data['Stat'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$inc++;?></td>
@@ -602,12 +609,12 @@
                                                                 <div class="form-group">
                                                                     <label for="message-text" class="col-form-label">Produk:</label>
                                                                     <select class="form-control" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
-                                                                            <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' - Stok: '.$data['stokProduk'];?></option>
+                                                                            <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' - Stok: '.$data['stokProduk'].' '.$data['Satuan'];?></option>
                                                                         <?php
-                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
+                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan ORDER BY Produk");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
-                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk'];?></option>
+                                                                            <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk'].' '.$data['Satuan'];?></option>
                                                                             <?php
                                                                             }
                                                                         ?>
@@ -650,7 +657,9 @@
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <?php echo $Produk.' : '.$jumlahMasuk.' '.$Satuan;?>
+                                                                    <?php echo $Produk.' ('.$jumlahMasuk.' '.$Satuan.') <br>';?>
+                                                                    <?php echo 'Harga Beli per Item: '.$konversiHargaMasuk.'<br>';?>
+                                                                    <?php echo 'Total Harga: '.$konversiTotalHargaMasuk;?>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="idBarangMasuk" value="<?=$idBarangMasuk;?>">

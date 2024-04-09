@@ -5,6 +5,7 @@
     $_SESSION['tambah']='false';
     $_SESSION['confirm']='false';
     $_SESSION['gagal']='false';
+    $_SESSION['cancel']='false';
 
     //Proses Mengecek Jabatan yang Dapat Mengakses Halaman Satuan
     if ($_SESSION['Jabatan'] == 'Checker') {
@@ -146,6 +147,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="databarangkeluar.php"><i class="fas fa-fw fa-arrow-up"></i>Barang Keluar</a>
+                            <?php 
+								}
+							?>
+                            <?php 
+								$jabatan=$_SESSION['Jabatan']=='Owner';
+								$jabatan2=$_SESSION['Jabatan']=='Checker';
+								if($jabatan OR $jabatan2){
+							?>
 							<a class="collapse-item" href="../retur/databarangretur.php"><i class="fas fa-fw fa-retweet"></i>Retur Barang</a>
 							<?php 
 								}
@@ -212,7 +221,6 @@
                                     if($jabatan OR $jabatan2){
                                 ?>  
                                 <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-                                <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
                                 <?php 
 								}?>
                                 <?php 
@@ -220,6 +228,7 @@
 									$jabatan2=$_SESSION['Jabatan']=='Checker';
 									if($jabatan OR $jabatan2){
 								?>
+                                <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
 								<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
 								<?php 
 								}?> 

@@ -325,14 +325,14 @@
 								if($jabatan OR $jabatan2){
 							?>
                             <a class="collapse-item" href="../laporan/laporanbarangkeluar.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Keluar</a>
-                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
                             <?php 
 							}?>
-                            <?php 
+                             <?php 
 								$jabatan=$_SESSION['Jabatan']=='Owner';
 								$jabatan2=$_SESSION['Jabatan']=='Checker';
 								if($jabatan OR $jabatan2){
 							?>
+                            <a class="collapse-item" href="../laporan/laporanbarangretur.php"><i class="fas fa-fw fa-bars"></i>Laporan Barang Retur</a>
 							<a class="collapse-item" href="../laporan/laporanopnamebarang.php"><i class="fas fa-fw fa-bars"></i>Laporan Opname Barang</a>
 							<?php 
 							}?>
@@ -511,7 +511,7 @@
                                         <tbody>
                                             <?php
                                                 $tampilDetailProdukKeluar= mysqli_query($conn,"
-                                                SELECT *,tbstokkeluar.Status FROM tbdetailkeluar
+                                                SELECT *,tbstokkeluar.Status AS Stat FROM tbdetailkeluar
                                                 INNER JOIN tbstokkeluar ON tbdetailkeluar.idBarangKeluar=tbstokkeluar.idBarangKeluar
                                                 INNER JOIN tbproduk ON tbdetailkeluar.idProduk=tbproduk.idProduk
                                                 INNER JOIN tbsatuan ON tbsatuan.idSatuan=tbproduk.idSatuan
@@ -529,7 +529,7 @@
                                                     $jumlahKeluar =$data['jumlahKeluar'];
                                                     $hargaTotalHargaKeluar=$hargaKeluar*$jumlahKeluar;
                                                     $konversiTotalHargaKeluar = "Rp " . number_format($hargaTotalHargaKeluar,2,',','.');
-                                                    $Status =(int) $data['Status'];
+                                                    $Status =(int) $data['Stat'];
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?=$inc++;?></td>
@@ -537,7 +537,7 @@
                                                 <td class="text-center"><?=$konversiHargaKeluar;?></td>
                                                 <td class="text-center"><?=$jumlahKeluar.' '.$Satuan;?></td>
                                                 <td class="text-center"><?=$konversiTotalHargaKeluar;?></td>
-                                                <?php if($Status==0){?>
+                                                <?php if($Status == 0){?>
                                                     <td class="text-center">
                                                         <button type="button" class="btn btn-warning btn-sm mb-4" data-toggle="modal" data-target="#ubah<?=$idDetailKeluar;?>">
                                                             <i class="fas fa-edit">Ubah</i>
@@ -564,7 +564,7 @@
                                                                 <div class="form-group">
                                                                     <label for="message-text" class="col-form-label">Produk:</label>
                                                                     <select class="form-control" id="idProduk" name="idProduk">
-                                                                        <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' ('."Rp " . number_format($data['hargaKeluar'],2,',','.').') - Stok: '.$stokProduk;?></option>
+                                                                        <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' ('."Rp " . number_format($data['hargaKeluar'],2,',','.').') - Stok: '.$stokProduk.' '.$Satuan;?></option>
                                                                         <?php
                                                                             $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
                                                                             while ($data = mysqli_fetch_array($query)) {
@@ -609,7 +609,9 @@
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <?php echo $Produk.' : '.$jumlahKeluar.' '.$Satuan;?>
+                                                                    <?php echo $Produk.' : '.$jumlahKeluar.' '.$Satuan.'<br>';?>
+                                                                    <?php echo 'Harga Jual per Item: '.$konversiHargaKeluar.'<br>';?>
+                                                                    <?php echo 'Total Harga: '.$konversiTotalHargaKeluar;?>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <input type="hidden" name="idBarangKeluar" value="<?=$idBarangKeluar;?>">
@@ -627,7 +629,7 @@
                                             ?>
 
                                             <!-- Modal Cancel -->
-                                            <div class="modal fade" id="cancel<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal fade" id="delete<?=$idBarangKeluar;?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <form method="POST">
                                                             <div class="modal-content">
@@ -654,7 +656,7 @@
                                                     <form method="POST">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk mengconfirm permintaan barang keluar tersebut?</h5>
+                                                                    <h5 class="modal-title" id="exampleModalLongTitle">Apakah anda yakin untuk confirm proses barang keluar tersebut?</h5>
                                                                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">×</span>
                                                                     </button>
@@ -681,7 +683,7 @@
                                             ?>
                                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
                                                 <button class="btn btn-success" type="button" data-toggle="modal" data-target="#confirm<?=$idBarangKeluar;?>"><i class="fas fa-check">Confirm</i></button>
-                                                <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#cancel<?=$idBarangKeluar;?>"><i class="fas fa-times">Cancel</i></button>
+                                                <button class="btn btn-danger ml-2" type="button" data-toggle="modal" data-target="#delete<?=$idBarangKeluar;?>"><i class="fas fa-times">Delete</i></button>
                                             </div>
                                             <?php 
                                                 }
