@@ -33,14 +33,15 @@
     $pdf->SetFont('Times','',9);
     $pdf->Cell(13,1,'Bahan Bangunan, Alat Listrik, Teknik, Kayu, Besi',0,1,'C');
     $pdf->Cell(13,0,'Baja, Sanitary, Spandek, Bondek, Wiremesh',0,1,'C');
-    $pdf->Cell(0,0,'',0,1);
+    $pdf->Cell(0,0.2,'',0,1);
     $pdf->SetFont('Times','',10);
     $pdf->Cell(10,1,'Jl. Limo Raya No.112, Limo, Kec. Limo, Kota Depok, Jawa Barat 16514',0,1,'C');
-    $pdf->Line(0, 4, 600, 4);
-    $pdf->Cell(0, 0.5,'',0,1); 
+    $pdf->Cell(10,0,'No. Telp: 081365498675',0,1,'C');
+    $pdf->Line(0, 4.5, 600, 5);
+    $pdf->Cell(0, 1,'',0,1); 
     $pdf->SetFont('times','B',9);
     $pdf->Cell(10,0,'Tanggal: '.$tanggalKeluar,0,1,'L');
-    $pdf->Cell(10,1,'Kepada Yth.:'.$Keterangan,0,1,'L');
+    $pdf->Cell(10,1,'Kepada Yth. :'.$Keterangan,0,1,'L');
 
     // Menghitung lebar halaman pdf
     $pageWidth = $pdf->GetPageWidth();
