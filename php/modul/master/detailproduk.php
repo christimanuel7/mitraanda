@@ -2,7 +2,6 @@
     require '../../fungsi.php';
     require '../../ceklogin.php';
 	
-    $_SESSION['nonaktif']='false';
     $_SESSION['ubah']='false';
 
     // Mengambil data idProduk
@@ -32,8 +31,7 @@
         $ubahProduk = mysqli_query($conn,"UPDATE tbproduk SET Produk='$Produk',idSatuan='$idSatuan',hargaJual='$hargaJual',stokProduk='$stokProduk' WHERE idProduk='$idProduk'");
         
         // Kueri mengubah data satuan
-        if($ubahProduk){
-            echo '<script type="text/javascript">window.location.href = "produk.php";</script>';
+        if($ubahProduk){;
             $_SESSION['ubah']='true';
         }else{
             $_SESSION['gagal']='true'; 
@@ -48,7 +46,6 @@
         // Kueri mengubah status data produk ke '0'
         if($nonaktifProduk){
             echo '<script type="text/javascript">window.location.href = "produk.php";</script>';
-            $_SESSION['nonaktif']='true';
         }else{
             $_SESSION['gagal']='true'; 
         }
@@ -290,7 +287,11 @@
                     <div class="container-fluid">
                         <h1 class="h3 mb-2 text-gray-800">Data Detail Produk</h1>
                         <?php
-                             if($_SESSION['gagal']=='true'){
+                            if($_SESSION['ubah']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Data produk berhasil diubah.
+                                </div>';
+                            }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
                                     Data produk tidak terkoneksi.
                                 </div>';
@@ -313,7 +314,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label for="message-text" class="col-form-label">Satuan:</label>
-                                                <select class="form-control" title="Pilih Satuan" id="idSatuan" name="idSatuan">
+                                                <select class="form-control" title="Pilih Satuan" id="idSatuan" name="idSatuan" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                     <?php
                                                         $querySelect=mysqli_query($conn, "SELECT * FROM tbproduk
                                                         INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan
@@ -335,7 +336,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Harga Jual per Unit:</label>
-                                        <input type="number" class="form-control" id="hargaJual" name="hargaJual" min="0" oninvalid="this.setCustomValidity('Masukkan harga jual per unit pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" value="<?php echo $hargaJual;?>" required>
+                                        <input type="number" class="form-control" id="hargaJual" name="hargaJual" min="0" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" value="<?php echo $hargaJual;?>" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Jumlah Stok:</label>

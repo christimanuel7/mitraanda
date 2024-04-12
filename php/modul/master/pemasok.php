@@ -370,7 +370,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="phone">Nomor Telepon:</label>
-                                                        <input type="tel" class="form-control" id="noTelepon" name="noTelepon" minlength="10" maxlength="13" placeholder="Masukkan Nomor Telepon"  oninvalid="this.setCustomValidity('Masukkan nomor telepon pada kolom pengisian ini sebanyak 10-13 digit!')"  onchange="this.setCustomValidity('')">
+                                                        <input type="tel" class="form-control" id="noTelepon" name="noTelepon" placeholder="Masukkan Nomor Telepon">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="message-text" class="col-form-label">Contact Person:</label>
@@ -493,7 +493,7 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="phone">Nomor Telepon:</label>
-                                                                    <input type="tel" class="form-control" id="noTelepon" name="noTelepon" minlength="10" maxlength="13" placeholder="Masukkan Nomor Telepon" value="<?php echo $noTelepon;?>" oninvalid="this.setCustomValidity('Masukkan nomor telepon pada kolom pengisian ini sebanyak 10-13 digit!')"  onchange="this.setCustomValidity('')">
+                                                                    <input type="tel" class="form-control" id="noTelepon" name="noTelepon" minlength="10" maxlength="13" placeholder="Masukkan Nomor Telepon" value="<?php echo $noTelepon;?>">
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="message-text" class="col-form-label">Contact Person:</label>

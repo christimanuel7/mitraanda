@@ -263,13 +263,13 @@
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label for="">Tanggal Awal:</label>
-                                                        <input type="date" class="form-control" id="tgAwal" name="tgAwal" value="<?php echo $tgAwal;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')"  max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tgAwal" name="tgAwal" value="<?php echo $tgAwal;?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')"  max="<?= date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label for="">Tanggal Akhir:</label>
-                                                        <input type="date" class="form-control" id="tgAkhir" name="tgAkhir" value="<?php echo $tgAkhir;?>" oninvalid="this.setCustomValidity('Masukkan tanggal pada kolom pengisian tanggal ini!')"  max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tgAkhir" name="tgAkhir" value="<?php echo $tgAkhir;?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')"  max="<?= date('Y-m-d'); ?>" required>
                                                     </div>
                                                 </div>
                                             </div>

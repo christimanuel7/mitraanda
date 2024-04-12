@@ -8,6 +8,7 @@
     }
 		
     $_SESSION['tambah']='false';
+    $_SESSION['simpan']='false';
     $_SESSION['ubah']='false';
     $_SESSION['hapus']='false';
     $_SESSION['terima']='false';
@@ -31,22 +32,22 @@
 
     // Proses Menyimpan Perubahan Informasi Data Barang Masuk
     if(isset($_POST['simpanDataOpname'])){
-        $idBarangMasuk = $_POST['idOpname'];
+        $idBarangOpname = $_POST['idOpname'];
         $tanggalOpname = $_POST['tanggalOpname'];
         $Keterangan=$_POST['Keterangan'];
         $idPengguna=$_POST['idPengguna'];
 
-        $simpanDataMasuk = mysqli_query($conn,"UPDATE tbopname SET tanggalOpname ='$tanggalOpname ',Keterangan='$Keterangan',idPengguna='$idPengguna' WHERE idOpname='$idOpname'");
+        $simpanDataOpname = mysqli_query($conn,"UPDATE tbopname SET tanggalOpname ='$tanggalOpname ',Keterangan='$Keterangan',idPengguna='$idPengguna' WHERE idOpname='$idBarangOpname'");
         
         // Kueri mengubah data detail barang masuk
-        if($simpanDataMasuk){
-            $_SESSION['ubah']='true'; 
+        if($simpanDataOpname){
+            $_SESSION['simpan']='true'; 
         }else{
             $_SESSION['gagal']='true';   
         } 
     }
 
-    // 
+    // Proses Menambah Detail Produk Opname Barang, Ketika Data Detail Opname Barang Ditambah
     if(isset($_POST['tambahDetailOpname'])){
         $idOpname= $_POST['idOpname'];
         $idProduk= $_POST['idProduk'];
@@ -91,7 +92,7 @@
         $Alasan= $_POST['Alasan'];
 
         if($jumlahOpname<=$jumlahSistem){
-            mysqli_query($conn,"UPDATE tbdetailopname SET idProduk='$idProduk',jumlahFisik='$jumlahOpname',jumlahSistem='$jumlahSistem',Alasan='$Alasan' WHERE idDetailOpname='$idDetailOpname'");
+            mysqli_query($conn,"UPDATE tbdetailopname SET idProduk='$idProduk',jumlahSistem='$jumlahSistem',jumlahFisik='$jumlahOpname',Alasan='$Alasan' WHERE idDetailOpname='$idDetailOpname'");
             $_SESSION['ubah']='true'; 
         }else{
             $_SESSION['over']='true';
@@ -408,98 +409,108 @@
                         <?php
                             if($_SESSION['tambah']=='true'){
                                 echo '<div class="alert alert-primary" role="alert">
-                                    Data opname berhasil ditambah pada data detail opname.
+                                    Produk berhasil ditambah pada data detail opname barang.
+                                </div>';
+                            }else if($_SESSION['simpan']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Data opname berhasil diubah.
                                 </div>';
                             }else if($_SESSION['ubah']=='true'){
                                 echo '<div class="alert alert-warning" role="alert">
-                                    Data opname berhasil diubah pada data detail opname.
+                                    Produk berhasil diubah pada data detail opname barang.
                                 </div>';
                             }else if($_SESSION['hapus']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
-                                    Data opname berhasil dihapus pada data detail opname.
+                                    Produk berhasil dihapus pada data detail opname barang.
                                 </div>';
                             }else if($_SESSION['terima']=='true'){
                                 echo '<div class="alert alert-success" role="alert">
                                     Data opname berhasil diterima.
                                 </div>';
+                            }else if($_SESSION['over']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Jumlah masukan produk yang diopname melebihi stok produk.
+                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
-                                    Data opname tidak terkoneksi.
+                                    Data detail pname tidak terkoneksi.
                                 </div>';
                             }
-                        ?>      
-                        <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label for="recipient-name" class="col-form-label">ID Opname:</label>
-                                    <input type="text" class="form-control" id="idOpname" name="idOpname" value="<?php echo $idOpname;?>" readonly>
+                        ?>  
+                        <form method="POST">    
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">ID Opname:</label>
+                                        <input type="text" class="form-control" id="idOpname" name="idOpname" value="<?php echo $idOpname;?>" readonly>
+                                    </div>
+                                    <?php if($Status==0){?>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Tanggal Opname:</label>
+                                            <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" max="<?= date('Y-m-d'); ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Keterangan:</label>
+                                            <input type="text" class="form-control" value="<?php echo $Keterangan;?>" id="Keterangan" name="Keterangan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleFormControlSelect1">Pemeriksa:</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna">
+                                            <?php
+                                                $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
+                                                WHERE idPengguna='$idPengguna'");
+                                                $dataSelect=mysqli_fetch_array($querySelect);
+                                            ?>
+                                            <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
+                                            <?php
+                                                $query    =mysqli_query($conn, "SELECT * FROM tbpengguna WHERE NOT Jabatan='Penjaga Tok' ORDER BY idPengguna");
+                                                while ($data = mysqli_fetch_array($query)) {
+                                                ?>
+                                                <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
+                                                <?php
+                                                }
+                                            ?>
+                                            </select>
+                                        </div>
+                                    <?php } else{?>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Tanggal Opname:</label>
+                                            <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Keterangan:</label>
+                                            <input type="text" class="form-control" value="<?php echo $Keterangan;?>" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleFormControlSelect1">Pemeriksa:</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna" readonly>
+                                            <?php
+                                                $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
+                                                WHERE idPengguna='$idPengguna'");
+                                                $dataSelect=mysqli_fetch_array($querySelect);
+                                            ?>
+                                            <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
+                                            <?php
+                                                $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
+                                                while ($data = mysqli_fetch_array($query)) {
+                                                ?>
+                                                <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
+                                                <?php
+                                                }
+                                            ?>
+                                            </select>
+                                        </div>
+                                    <?php }?>
+                                    <?php if($Status==0){?>
+                                        <button type="submit" class="btn btn-success" name="simpanDataOpname">
+                                            <i class="fas fa-save">Simpan</i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
+                                            <i class="fas fa-plus">Tambah</i>
+                                        </button>
+                                    <?php }?>
                                 </div>
-                                <?php if($Status==0){?>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label">Tanggal Opname:</label>
-                                        <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label">Keterangan:</label>
-                                        <input type="text" class="form-control" value="<?php echo $Keterangan;?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleFormControlSelect1">Pemeriksa:</label>
-                                        <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna">
-                                        <?php
-                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
-                                            WHERE idPengguna='$idPengguna'");
-                                            $dataSelect=mysqli_fetch_array($querySelect);
-                                        ?>
-                                        <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
-                                        <?php
-                                            $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
-                                            while ($data = mysqli_fetch_array($query)) {
-                                            ?>
-                                            <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
-                                            <?php
-                                            }
-                                        ?>
-                                        </select>
-                                    </div>
-                                <?php } else{?>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label">Tanggal Opname:</label>
-                                        <input type="date" class="form-control" id="tanggalOpname" name="tanggalOpname" value="<?php echo $tanggalOpname;?>" max="<?= date('Y-m-d'); ?>" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label">Keterangan:</label>
-                                        <input type="text" class="form-control" value="<?php echo $Keterangan;?>" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="exampleFormControlSelect1">Pemeriksa:</label>
-                                        <select class="form-control" id="exampleFormControlSelect1" id="idPengguna" name="idPengguna" readonly>
-                                        <?php
-                                            $querySelect=mysqli_query($conn, "SELECT * FROM tbpengguna
-                                            WHERE idPengguna='$idPengguna'");
-                                            $dataSelect=mysqli_fetch_array($querySelect);
-                                        ?>
-                                        <option value="<?php echo $dataSelect['idPengguna'];?>" hidden><?php echo $dataSelect['Nama'];?></option>
-                                        <?php
-                                            $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY idPengguna");
-                                            while ($data = mysqli_fetch_array($query)) {
-                                            ?>
-                                            <option value="<?=$data['idPengguna'];?>"><?php echo $data['Nama'];?></option>
-                                            <?php
-                                            }
-                                        ?>
-                                        </select>
-                                    </div>
-                                <?php }?>
-                                <?php if($Status==0){?>
-                                    <button type="submit" class="btn btn-success" name="simpanDataKeluar">
-                                        <i class="fas fa-save">Simpan</i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambah">
-                                        <i class="fas fa-plus">Tambah</i>
-                                    </button>
-                                <?php }?>
-                            </div>
+                            </form>
                             <div class="card-body">
                                 <!-- Modal Tambah -->
                                 <div class="modal fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -515,7 +526,7 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Produk & Jumlah Sistem:</label>
-                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
+                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                             <?php
                                                             // INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan  
                                                                 $query =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailopname.idProduk FROM tbdetailopname WHERE tbdetailopname.idOpname = '$fetchIdOpname') ORDER BY tbproduk.Produk ");         
@@ -530,11 +541,11 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Jumlah Opname:</label>
-                                                        <input type="number" class="form-control" id="jumlahOpname" name="jumlahOpname" min="0" placeholder="Masukkan Jumlah Opname" oninput="validity.valid||(value='');" required>
+                                                        <input type="number" class="form-control" id="jumlahOpname" name="jumlahOpname" min="0" placeholder="Masukkan Jumlah Opname" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div> 
                                                     <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Alasan:</label>
-                                                        <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan" required>
+                                                        <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div> 
                                                     <div class="modal-footer">
                                                         <input type="hidden" name="idOpname" value="<?=$idOpname;?>">
@@ -630,7 +641,7 @@
                                                                         ?>
                                                                         <option value="<?php echo $idProduk;?>" hidden><?php echo $dataSelect['Produk'].' - '.$dataSelect['stokProduk'].' '.$dataSelect['Satuan'].'';?></option>
                                                                         <?php
-                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan ORDER BY Produk");
+                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailopname.idProduk FROM tbdetailopname WHERE tbdetailopname.idOpname = '$fetchIdOpname') ORDER BY tbproduk.Produk ");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
                                                                             <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - '.$data['stokProduk'].' '.$data['Satuan'].'';?></option>
@@ -641,11 +652,11 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Jumlah Opname:</label>
-                                                                    <input type="number" class="form-control" id="jumlahOpname" name="jumlahOpname" min="0" value="<?php echo $jumlahOpname;?>" oninput="validity.valid||(value='');">
+                                                                    <input type="number" class="form-control" id="jumlahOpname" name="jumlahOpname" min="0" value="<?php echo $jumlahOpname;?>" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="recipient-name" class="col-form-label">Alasan:</label>
-                                                                    <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan" value="<?php echo $Alasan;?>">
+                                                                    <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan" value="<?php echo $Alasan;?>" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                                 </div> 
                                                             </div>
                                                             <div class="modal-footer">

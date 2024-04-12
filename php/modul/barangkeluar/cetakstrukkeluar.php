@@ -16,7 +16,7 @@
     ORDER BY tbdetailkeluar.idDetailKeluar");
     $rowBarangKeluar =mysqli_fetch_array($data);
 
-	$tanggalKeluar = $rowBarangKeluar['tanggalKeluar'];
+    $tanggalKeluar=date('d M Y', strtotime($rowBarangKeluar['tanggalKeluar']));
     $Keterangan = $rowBarangKeluar['Keterangan'];
          
     // Mengatur Halaman PDF
@@ -71,7 +71,7 @@
         $konversiHargaKeluar = "Rp " . number_format($d['hargaKeluar'],2,',','.');
         $konversiHargaJumlah = "Rp " . number_format($hargaJumlah,2,',','.');
         // $tanggalMasuk= date('d-m-Y', strtotime($d['tanggalMasuk']));
-        $pdf->Cell(2,1, $d['jumlahKeluar'],1,0,'C');
+        $pdf->Cell(2,1, $d['jumlahKeluar'].' '.$d['Satuan'],1,0,'C');
         $pdf->Cell(4,1, $d['Produk'],1,0,'C');
         $pdf->Cell(2,1, $konversiHargaKeluar,1,0,'C');
         $pdf->Cell(2,1, $konversiHargaJumlah,1,1,'C');

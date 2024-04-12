@@ -5,6 +5,7 @@
     $_SESSION['tambah']='false';
     $_SESSION['ubah']='false';
     $_SESSION['hapus']='false';
+    $_SESSION['simpan']='false';
     $_SESSION['confirm']='false';
     $_SESSION['cancel']='false';
     $_SESSION['gagal']='false';
@@ -30,7 +31,7 @@
         
         // Kueri mengubah data detail barang masuk
         if($simpanDataKeluar){
-            $_SESSION['ubah']='true'; 
+            $_SESSION['simpan']='true'; 
         }else{
             $_SESSION['gagal']='true';   
         } 
@@ -385,6 +386,10 @@
                                 echo '<div class="alert alert-primary" role="alert">
                                     Produk berhasil ditambah pada data detail barang keluar.
                                 </div>';
+                            }else if($_SESSION['simpan']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Data barang keluar berhasil diubah.
+                                </div>';
                             }else if($_SESSION['ubah']=='true'){
                                 echo '<div class="alert alert-warning" role="alert">
                                     Produk berhasil diubah pada data detail barang keluar.
@@ -417,11 +422,11 @@
                                     <?php if($Status == '0'){?>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Tanggal Keluar:</label>
-                                        <input type="date" class="form-control" id="tanggalKeluar" name="tanggalKeluar" value="<?php echo $tanggalKeluar;?>" max="<?= date('Y-m-d'); ?>" required>
+                                        <input type="date" class="form-control" id="tanggalKeluar" name="tanggalKeluar" value="<?php echo $tanggalKeluar;?>" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Keterangan:</label>
-                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" value="<?php echo $Keterangan;?>" required>
+                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" value="<?php echo $Keterangan;?>" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                     </div>
                                     <?php }else{?>
                                     <div class="form-group">
@@ -460,7 +465,7 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Produk:</label>
-                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
+                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailkeluar.idProduk FROM tbdetailkeluar WHERE tbdetailkeluar.idBarangKeluar = '$fetchIdBarangKeluar') ORDER BY tbproduk.Produk ");       
                                                                 while ($data = mysqli_fetch_array($query)) {
@@ -473,7 +478,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Jumlah Keluar:</label>
-                                                        <input type="number" class="form-control" id="jumlahKeluar" name="jumlahKeluar" min="1" placeholder="Masukkan Jumlah Keluar" oninput="validity.valid||(value='');">
+                                                        <input type="number" class="form-control" id="jumlahKeluar" name="jumlahKeluar" min="1" placeholder="Masukkan Jumlah Keluar" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                     </div> 
                                                     <div class="modal-footer">
                                                         <input type="hidden" name="idBarangKeluar" value="<?=$idBarangKeluar;?>">
@@ -566,7 +571,7 @@
                                                                     <select class="form-control" id="idProduk" name="idProduk">
                                                                         <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' ('."Rp " . number_format($data['hargaKeluar'],2,',','.').') - Stok: '.$stokProduk.' '.$Satuan;?></option>
                                                                         <?php
-                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk ORDER BY Produk");
+                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailkeluar.idProduk FROM tbdetailkeluar WHERE tbdetailkeluar.idBarangKeluar = '$fetchIdBarangKeluar') ORDER BY tbproduk.Produk ");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
                                                                             <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' ('."Rp " . number_format($data['hargaJual'],2,',','.'). ') - Stok: '.$data['stokProduk'];?></option>
@@ -577,7 +582,7 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Jumlah Keluar:</label>
-                                                                    <input type="number" class="form-control" id="jumlahKeluar" name="jumlahKeluar" min="0" value="<?php echo $jumlahKeluar;?>" oninput="validity.valid||(value='');">
+                                                                    <input type="number" class="form-control" id="jumlahKeluar" name="jumlahKeluar" min="0" value="<?php echo $jumlahKeluar;?>" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

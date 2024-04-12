@@ -310,11 +310,11 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="tanggal">Tanggal Keluar: </label>
-                                                        <input type="date" class="form-control" id="tglKeluar" name="tglKeluar" max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tglKeluar" name="tglKeluar" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-form-label">Keterangan:</label>
-                                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" placeholder="Masukkan Keterangan">
+                                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" placeholder="Masukkan Keterangan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

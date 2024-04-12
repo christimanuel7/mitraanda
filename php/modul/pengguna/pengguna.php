@@ -21,7 +21,7 @@
         $Jabatan= $_POST['Jabatan'];
         $noTelepon= $_POST['noTelepon'];
         $Status= '1';
-        $tambahPengguna = mysqli_query($this->conn, "INSERT INTO tbpengguna (Username,Nama,Password,Jabatan,noTelepon,Status) VALUES ('$Username','$Nama','$Password','$Jabatan','$noTelepon','$Status')");
+        $tambahPengguna = mysqli_query($conn, "INSERT INTO tbpengguna (Username,Nama,Password,Jabatan,noTelepon,Status) VALUES ('$Username','$Nama','$Password','$Jabatan','$noTelepon','$Status')");
 
         // Kueri menambah data pengguna
         if($tambahPengguna){
@@ -40,7 +40,7 @@
         $Jabatan= $_POST['Jabatan'];
         $noTelepon= $_POST['noTelepon'];
         $Status= '1';
-        $ubahPengguna = mysqli_query($this->conn,"UPDATE tbpengguna SET Username='$Username',Nama='$Nama',Jabatan='$Jabatan',noTelepon='$noTelepon' WHERE idPengguna='$idPengguna'");
+        $ubahPengguna = mysqli_query($conn,"UPDATE tbpengguna SET Username='$Username',Nama='$Nama',Jabatan='$Jabatan',noTelepon='$noTelepon' WHERE idPengguna='$idPengguna'");
         
         // Kueri memgubah data pengguna
         if($ubahPengguna){
@@ -54,7 +54,7 @@
     // Proses Menonaktifkan Pengguna, Ketika Data Pengguna Dinonaktif
     if(isset($_POST['nonaktifPengguna'])){
         $idPengguna= $_POST['idPengguna'];
-        $nonaktifPengguna = mysqli_query($this->conn, "UPDATE tbpengguna SET Status='0' WHERE idPengguna='$idPengguna'");
+        $nonaktifPengguna = mysqli_query($conn, "UPDATE tbpengguna SET Status='0' WHERE idPengguna='$idPengguna'");
         
         // Kueri mengubah status data pengguna ke '0'
         if($nonaktifPengguna){
@@ -68,7 +68,7 @@
     // Proses Memulihkan Pengguna, Ketika Data Pengguna Dipulihkan
     if(isset($_POST['pulihkanPengguna'])){
         $idPengguna= $_POST['idPengguna'];
-        $pulihkanPengguna = mysqli_query($this->conn, "UPDATE tbpengguna SET Status='1' WHERE idPengguna='$idPengguna'");
+        $pulihkanPengguna = mysqli_query($conn, "UPDATE tbpengguna SET Status='1' WHERE idPengguna='$idPengguna'");
 
         // Kueri mengubah status data pengguna ke '1'
         if($pulihkanPengguna){
@@ -374,20 +374,20 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="message-text" class="col-form-label"><b>Username:</b></label>
-                                                        <input type="text" class="form-control" id="Username" name="Username" placeholder="Masukkan Username Pengguna" minlength="8" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" required>
+                                                        <input type="text" class="form-control" id="Username" name="Username" placeholder="Masukkan Username Pengguna" minlength="8" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="message-text" class="col-form-label">Nama:</label>
-                                                        <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama Pengguna" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" required>
+                                                        <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama Pengguna" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="phone">Nomor Telepon:</label>
-                                                        <input type="tel" class="form-control" id="noTelepon" name="noTelepon" placeholder="Masukkan Nomor Telepon" minlength="10" maxlength="13" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 10 hingga 13 digit!')" required>
+                                                        <input type="tel" class="form-control" id="noTelepon" name="noTelepon" placeholder="Masukkan Nomor Telepon" minlength="10" maxlength="13" oninvalid="this.setCustomValidity('Masukkan nomor telepon pada kolom pengisian ini sebanyak 10 hingga 13 digit!')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Jabatan:</label>
-                                                        <select class="form-control" id="exampleFormControlSelect1" id="Jabatan" name="Jabatan" required>
-                                                            <option value="">Pilih Jabatan</option>
+                                                        <select class="form-control" id="exampleFormControlSelect1" id="Jabatan" name="Jabatan" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
+                                                            <option value="" disabled selected>Pilih Jabatan</option>
                                                             <option value="Owner">Owner</option>
                                                             <option value="Checker">Checker</option>
                                                             <option value="Penjaga Toko">Penjaga Toko</option>
@@ -433,7 +433,7 @@
                                             <form method="POST">
                                                     <div class="modal-body">
                                                             <label for="exampleFormControlSelect1">Pengguna:</label>
-                                                            <select class="form-control selectpicker" title="Pilih Pengguna" data-live-search="true" id="idPengguna" name="idPengguna" required>
+                                                            <select class="form-control selectpicker" title="Pilih Pengguna" data-live-search="true" id="idPengguna" name="idPengguna oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbpengguna WHERE Status='0' ORDER BY idPengguna");
                                                                 while ($data = mysqli_fetch_array($query)) {
@@ -577,7 +577,7 @@
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="message-text" class="col-form-label">Nama:</label>
-                                                                        <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama" value="<?php echo $Nama;?>" required>
+                                                                        <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama" value="<?php echo $Nama;?>" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="phone">Nomor Telepon:</label>

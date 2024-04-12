@@ -282,15 +282,15 @@
                         <?php
                             if($_SESSION['tambah']=='true'){
                                 echo '<div class="alert alert-primary" role="alert">
-                                    Data opname berhasil ditambah.
+                                    Data opname barang berhasil ditambah.
                                 </div>';
                             }else if($_SESSION['tolak']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
-                                    Data opname berhasil ditolak.
+                                    Data opname barang berhasil ditolak.
                                 </div>';
                             }if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
-                                    Data opname tidak terkoneksi.
+                                    Data opname barang tidak terkoneksi.
                                 </div>';
                             }
                         ?>      
@@ -314,15 +314,15 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="tanggal">Tanggal Opname: </label>
-                                                        <input type="date" class="form-control" id="tglOpname" name="tglOpname" max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tglOpname" name="tglOpname" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-form-label">Keterangan:</label>
-                                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" placeholder="Masukkan Keterangan" required>
+                                                        <input type="text" class="form-control" id="Keterangan" name="Keterangan" placeholder="Masukkan Keterangan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Pemeriksa: </label>
-                                                        <select class="form-control selectpicker" title="Pilih Pemeriksa" id="exampleFormControlSelect1"  data-live-search="true" id="idPengguna" name="idPengguna" required>
+                                                        <select class="form-control selectpicker" title="Pilih Pemeriksa" id="exampleFormControlSelect1"  data-live-search="true" id="idPengguna" name="idPengguna" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbpengguna WHERE NOT Jabatan = 'Penjaga Toko' ORDER BY idPengguna");
                                                                 while ($data = mysqli_fetch_array($query)) {

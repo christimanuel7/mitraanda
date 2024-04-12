@@ -6,6 +6,7 @@
     $_SESSION['hapus']='false';
     $_SESSION['over']='false';
     $_SESSION['gagal']='false';
+    $_SESSION['confirm']='false';
 
     //Mengecek Jabatan yang Dapat Mengakses Halaman Retur
     if($_SESSION['Jabatan']=='Penjaga Toko'){
@@ -327,6 +328,10 @@
                                 echo '<div class="alert alert-danger" role="alert">
                                     Data barang retur berhasil dihapus.
                                 </div>';
+                            }else if($_SESSION['confirm']=='true'){
+                                echo '<div class="alert alert-success" role="alert">
+                                    Data barang retur berhasil diconfirm.
+                                </div>';
                             }else if($_SESSION['over']=='true'){
                                 echo '<div class="alert alert-warning" role="alert">
                                     Jumlah masukan produk yang diretur melebihi stok produk.
@@ -357,7 +362,7 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Produk:</label>
-                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idDetailMasuk" name="idDetailMasuk">
+                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idDetailMasuk" name="idDetailMasuk" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                         <?php
                                                             $query    =mysqli_query($conn, "SELECT * FROM tbdetailmasuk
                                                             INNER JOIN tbstokmasuk ON tbdetailmasuk.idBarangMasuk=tbstokmasuk.idBarangMasuk
@@ -376,19 +381,19 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="tanggal">Tanggal Retur:</label>
-                                                        <input type="date" class="form-control" id="tglRetur" name="tglRetur" max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tglRetur" name="tglRetur" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="label">Jumlah Retur:</label>
-                                                        <input type="number" class="form-control" id="jumlahRetur" name="jumlahRetur" min="1" oninput="validity.valid||(value='');" placeholder="Masukkan Jumlah Retur" required>
+                                                        <input type="number" class="form-control" id="jumlahRetur" name="jumlahRetur" min="1" oninput="validity.valid||(value='');" placeholder="Masukkan Jumlah Retur" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-form-label">Alasan:</label>
-                                                        <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan">
+                                                        <input type="text" class="form-control" id="Alasan" name="Alasan" placeholder="Masukkan Alasan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" onchange="this.setCustomValidity('')">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="formFile" class="form-label">Upload Bukti:</label>
-                                                        <input class="form-control" type="file" name="imageRetur" accept="image/png, image/jpg, image/jpeg" required>
+                                                        <input class="form-control" type="file" name="imageRetur" accept="image/png, image/jpg, image/jpeg" oninvalid="this.setCustomValidity('Masukkan file lampiran pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

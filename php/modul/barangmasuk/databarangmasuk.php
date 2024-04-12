@@ -317,11 +317,11 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="tanggal">Tanggal Masuk: </label>
-                                                        <input type="date" class="form-control" id="tglMasuk" name="tglMasuk" max="<?= date('Y-m-d'); ?>" required>
+                                                        <input type="date" class="form-control" id="tglMasuk" name="tglMasuk" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Pemasok: </label>
-                                                        <select class="form-control selectpicker" title="Pilih Pemasok" id="exampleFormControlSelect1"  data-live-search="true" name="idPemasok" required>
+                                                        <select class="form-control selectpicker" title="Pilih Pemasok" id="exampleFormControlSelect1"  data-live-search="true" name="idPemasok" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbpemasok ORDER BY idPemasok");
                                                                 while ($data = mysqli_fetch_array($query)) {
@@ -334,11 +334,11 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="formFile" class="form-label">Upload Bukti:</label>
-                                                        <input class="form-control" type="file" name="imageMasuk" accept="image/png, image/jpg, image/jpeg" required>
+                                                        <input class="form-control" type="file" name="imageMasuk" accept="image/png, image/jpg, image/jpeg" oninvalid="this.setCustomValidity('Masukkan file lampiran pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Penerima: </label>
-                                                            <select class="form-control selectpicker" title="Pilih Penerima"  data-live-search="true" id="exampleFormControlSelect1" id="Penerima" name="Penerima" required>
+                                                            <select class="form-control selectpicker" title="Pilih Penerima"  data-live-search="true" id="exampleFormControlSelect1" id="Penerima" name="Penerima" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbpengguna ORDER BY Nama");
                                                                 while ($data = mysqli_fetch_array($query)) {

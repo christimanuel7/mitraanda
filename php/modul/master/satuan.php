@@ -349,7 +349,7 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                             <label for="message-text" class="col-form-label">Nama Satuan:</label>
-                                                            <input type="text" class="form-control" id="Satuan" name="Satuan" placeholder="Masukkan Nama Satuan" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini!')" required>
+                                                            <input type="text" class="form-control" id="Satuan" name="Satuan" placeholder="Masukkan Nama Satuan" oninvalid="this.setCustomValidity('Masukkan teks kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -379,7 +379,7 @@
                                             <form method="POST">
                                                 <div class="modal-body">
                                                     <label for="exampleFormControlSelect1">Nama Satuan:</label>
-                                                    <select class="form-control selectpicker" data-live-search="true" title="Pilih Satuan" id="idSatuan" name="idSatuan">
+                                                    <select class="form-control selectpicker" data-live-search="true" title="Pilih Satuan" id="idSatuan" name="idSatuan" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                         <?php
                                                             $query    =mysqli_query($conn, "SELECT * FROM tbsatuan WHERE Status='0' ORDER BY idSatuan");
                                                             while ($data = mysqli_fetch_array($query)) {

@@ -5,15 +5,15 @@
     $_SESSION['tambah']='false';
     $_SESSION['gagal']='false';
     $_SESSION['ubah']='false';
+    $_SESSION['pulihkan']='false';
 
     // Proses Menambah Produk, Ketika Data Produk Ditambah
     if(isset($_POST['tambahProduk'])){
         $idSatuan= $_POST['idSatuan'];
         $Produk= $_POST['Produk'];
-        $hargaBeli= $_POST['hargaBeli'];
         $hargaJual= $_POST['hargaJual'];
         $Status= '1';
-        $tambahProduk = mysqli_query($conn, "INSERT INTO tbproduk (Produk,idSatuan,hargaBeli,hargaJual,stokProduk,Status) VALUES ('$Produk','$idSatuan','$hargaBeli','hargaJual','0','$Status')");
+        $tambahProduk = mysqli_query($conn, "INSERT INTO tbproduk (Produk,idSatuan,hargaJual,stokProduk,Status) VALUES ('$Produk','$idSatuan','$hargaJual','0','$Status')");
         
         // Kueri menambah data produk
         if($tambahProduk){
@@ -278,6 +278,10 @@
                                 echo '<div class="alert alert-primary" role="alert">
                                     Data produk berhasil diubah.
                                 </div>';
+                            }else if($_SESSION['pulihkan']=='true'){
+                                echo '<div class="alert alert-success" role="alert">
+                                    Data produk berhasil dipulihkan.
+                                </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
                                     Data produk tidak terkoneksi.
@@ -390,7 +394,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label>Satuan:</label>
-                                                        <select class="form-control selectpicker" id="exampleFormControlSelect1" title="Pilih Satuan" data-live-search="true" data-size="5" id="idSatuan" name="idSatuan" oninvalid="this.setCustomValidity('Pilih item pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
+                                                        <select class="form-control selectpicker" id="exampleFormControlSelect1" title="Pilih Satuan" data-live-search="true" data-size="5" id="idSatuan" name="idSatuan" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbsatuan ORDER BY idSatuan");
                                                                 while ($data = mysqli_fetch_array($query)) {
@@ -403,7 +407,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-form-label">Harga Jual per Unit:</label>
-                                                        <input type="number" class="form-control" id="hargaJual" name="hargaJual" min="0" oninput="validity.valid||(value='');" placeholder="Masukkan Harga Jual per Unit" oninvalid="this.setCustomValidity('Masukkan harga jual per unit pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
+                                                        <input type="number" class="form-control" id="hargaJual" name="hargaJual" min="0" oninput="validity.valid||(value='');" placeholder="Masukkan Harga Jual per Unit" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -433,7 +437,7 @@
                                             <form method="POST">
                                                     <div class="modal-body">
                                                             <label for="exampleFormControlSelect1">Nama Produk:</label>
-                                                            <select class="form-control selectpicker" id="exampleFormControlSelect1" title="Pilih Produk" data-live-search="true" id="idProduk" id="idProduk" name="idProduk" oninvalid="this.setCustomValidity('Pilih item pada kolom pengisian ini!')" required>
+                                                            <select class="form-control selectpicker" id="exampleFormControlSelect1" title="Pilih Produk" data-live-search="true" id="idProduk" id="idProduk" name="idProduk" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                                 <?php
                                                                     $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE Status='0' ORDER BY idProduk");
                                                                     while ($data = mysqli_fetch_array($query)) {

@@ -289,14 +289,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Password Lama:</label>
-                                        <input type="password" class="form-control" id="inputPasswordLama" name="inputPasswordLama" minlength="8" placeholder="Masukkan Password Lama" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" required>
+                                        <input type="password" class="form-control" id="inputPasswordLama" name="inputPasswordLama" minlength="8" placeholder="Masukkan Password Lama" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" onchange="this.setCustomValidity('')" required>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="show" onclick="checkPasswordLama()">Lihat Password Lama
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Password Baru:</label>
-                                        <input type="password" class="form-control" id="inputPasswordBaru" name="inputPasswordBaru" minlength="8" placeholder="Masukkan Password Baru" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" required>
+                                        <input type="password" class="form-control" id="inputPasswordBaru" name="inputPasswordBaru" minlength="8" placeholder="Masukkan Password Baru" oninvalid="this.setCustomValidity('Masukkan teks pada kolom pengisian ini sebanyak 8 karakter atau lebih!')" onchange="this.setCustomValidity('')" required>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="show" onclick="checkPasswordBaru()">Lihat Password Baru
                                         </div>

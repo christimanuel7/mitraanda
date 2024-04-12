@@ -1,7 +1,8 @@
 <?php
     require '../../fungsi.php';
     require '../../ceklogin.php';
-		
+	
+    $_SESSION['simpan']='false';
     $_SESSION['tambah']='false';
     $_SESSION['ubah']='false';
     $_SESSION['hapus']='false';
@@ -40,7 +41,7 @@
         
         // Kueri mengubah data detail barang masuk
         if($simpanDataMasuk){
-            $_SESSION['ubah']='true'; 
+            $_SESSION['simpan']='true'; 
         }else{
             $_SESSION['gagal']='true';   
         } 
@@ -386,6 +387,10 @@
                                 echo '<div class="alert alert-warning" role="alert">
                                     Produk berhasil diubah pada data detail barang masuk.
                                 </div>';
+                            }else if($_SESSION['simpan']=='true'){
+                                echo '<div class="alert alert-warning" role="alert">
+                                    Data barang masuk berhasil diubah.
+                                </div>';
                             }else if($_SESSION['hapus']=='true'){
                                 echo '<div class="alert alert-danger" role="alert">
                                     Produk berhasil dihapus pada data detail barang masuk.
@@ -414,7 +419,7 @@
                                     <?php if($Status == 0){?>
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label">Tanggal Masuk:</label>
-                                        <input type="date" class="form-control" id="tanggalMasuk" name="tanggalMasuk" value="<?php echo $tanggalMasuk;?>" max="<?= date('Y-m-d'); ?>" required>
+                                        <input type="date" class="form-control" id="tanggalMasuk" name="tanggalMasuk" value="<?php echo $tanggalMasuk;?>" max="<?= date('Y-m-d'); ?>" oninvalid="this.setCustomValidity('Pilih tanggal pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleFormControlSelect1">Pemasok:</label>
@@ -505,11 +510,11 @@
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="exampleFormControlSelect1">Produk:</label>
-                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk" required>
+                                                        <select class="form-control selectpicker" title="Pilih Produk"  data-live-search="true" id="exampleFormControlSelect1" id="idProduk" name="idProduk" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
-                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailmasuk.idProduk FROM tbdetailmasuk WHERE tbdetailmasuk.idBarangMasuk = '$fetchIdBarangMasuk') ORDER BY tbproduk.Produk ");                                                                while ($data = mysqli_fetch_array($query)) {
+                                                                $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailmasuk.idProduk FROM tbdetailmasuk WHERE tbdetailmasuk.idBarangMasuk = '$fetchIdBarangMasuk') ORDER BY tbproduk.Produk");                                                                while ($data = mysqli_fetch_array($query)) {
                                                                 ?>
-                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk']?></option>
+                                                                <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk'].' '.$data['Satuan']?></option>
                                                                 <?php
                                                                 }
                                                             ?>
@@ -517,11 +522,11 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Harga Produk Masuk:</label>
-                                                        <input type="number" class="form-control" id="hargaMasuk" name="hargaMasuk" min="0" placeholder="Masukkan Harga Produk Masuk" oninput="validity.valid||(value='');" required>
+                                                        <input type="number" class="form-control" id="hargaMasuk" name="hargaMasuk" min="0" placeholder="Masukkan Harga Produk Masuk" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div> 
                                                      <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Jumlah Masuk:</label>
-                                                        <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="1" placeholder="Masukkan Jumlah Masuk" oninput="validity.valid||(value='');" required>
+                                                        <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="1" placeholder="Masukkan Jumlah Masuk" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                     </div> 
                                                     <div class="modal-footer">
                                                         <input type="hidden" name="idBarangMasuk" value="<?=$idBarangMasuk;?>">
@@ -611,7 +616,7 @@
                                                                     <select class="form-control" id="exampleFormControlSelect1" id="idProduk" name="idProduk">
                                                                             <option value="<?php echo $idProduk;?>" hidden><?php echo $Produk.' - Stok: '.$data['stokProduk'].' '.$data['Satuan'];?></option>
                                                                         <?php
-                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan ORDER BY Produk");
+                                                                            $query    =mysqli_query($conn, "SELECT * FROM tbproduk INNER JOIN tbsatuan ON tbproduk.idSatuan=tbsatuan.idSatuan WHERE tbproduk.idProduk NOT IN (SELECT DISTINCT tbdetailmasuk.idProduk FROM tbdetailmasuk WHERE tbdetailmasuk.idBarangMasuk = '$fetchIdBarangMasuk') ORDER BY tbproduk.Produk");
                                                                             while ($data = mysqli_fetch_array($query)) {
                                                                             ?>
                                                                             <option value="<?=$data['idProduk'];?>"><?php echo $data['Produk'].' - Stok: '.$data['stokProduk'].' '.$data['Satuan'];?></option>
@@ -622,11 +627,11 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Harga Produk Masuk:</label>
-                                                                    <input type="number" class="form-control" id="hargaMasuk" name="hargaMasuk" min="0" value="<?php echo $hargaMasuk;?>" oninput="validity.valid||(value='');" required>
+                                                                    <input type="number" class="form-control" id="hargaMasuk" name="hargaMasuk" min="0" value="<?php echo $hargaMasuk;?>" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Jumlah Masuk:</label>
-                                                                    <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="1" value="<?php echo $jumlahMasuk;?>" oninput="validity.valid||(value='');" required>
+                                                                    <input type="number" class="form-control" id="jumlahMasuk" name="jumlahMasuk" min="1" value="<?php echo $jumlahMasuk;?>" oninput="validity.valid||(value='');" oninvalid="this.setCustomValidity('Masukkan angka pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
