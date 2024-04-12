@@ -433,7 +433,7 @@
                                 </div>';
                             }else if($_SESSION['gagal']=='true'){
                                 echo '<div class="alert alert-secondary" role="alert">
-                                    Data detail pname tidak terkoneksi.
+                                    Data detail opname tidak terkoneksi.
                                 </div>';
                             }
                         ?>  

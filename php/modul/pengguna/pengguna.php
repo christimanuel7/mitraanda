@@ -433,7 +433,7 @@
                                             <form method="POST">
                                                     <div class="modal-body">
                                                             <label for="exampleFormControlSelect1">Pengguna:</label>
-                                                            <select class="form-control selectpicker" title="Pilih Pengguna" data-live-search="true" id="idPengguna" name="idPengguna oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
+                                                            <select class="form-control selectpicker" title="Pilih Pengguna" data-live-search="true" id="idPengguna" name="idPengguna" oninvalid="this.setCustomValidity('Pilih opsi pada kolom pengisian ini!')" onchange="this.setCustomValidity('')" required>
                                                             <?php
                                                                 $query    =mysqli_query($conn, "SELECT * FROM tbpengguna WHERE Status='0' ORDER BY idPengguna");
                                                                 while ($data = mysqli_fetch_array($query)) {
